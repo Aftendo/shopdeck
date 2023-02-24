@@ -193,7 +193,7 @@ def check_redeemable(request):
       try:
          title = Title.objects.get(tid=card.content)
       except ObjectDoesNotExist:
-         return JsonResponse({"error": {"code": "5615", "message": "The corresponding title was not found.\nContact an administrator."}})
+         return JsonResponse({"error": {"code": "5615", "message": "The corresponding title was not found.\nContact an administrator."}}, status=400)
       if request.POST.get("tin") != None:
          return JsonResponse({"error": {"code": "6969", "message": "This is a title download code.\nPlease use the right tool."}})
       res = {"redeemable_card": {"number": request.POST.get("card_number"), "contents": {"content": [{"title": {"name": title.name, "id": title.id}}]},"title_ec_info": {"title_id": title.tid, "content_size": title.size, "title_version": title.version}}}
@@ -217,9 +217,10 @@ def add_money_prepaid(request):
    try:
       card = redeemableCard.objects.get(code=request.POST.get("card_number"))
    except:
-      return JsonResponse({"error": {"code": "6561", "message": "This code is incorrect.\nPlease check up your code and try again."}})
+      return JsonResponse({"error": {"code": "6561", "message": "This code is incorrect.\nPlease check up your code and try again."}}, status=400)
    if card.used:
       res = {"error": {"code": "4626", "message": "This code is already used.\nSorry!"}}
+      return JsonResponse(res, status=400)
    res = {"transaction_result": {"transaction_id": 1,"post_balance": {"amount": str(int(card.content)+ds.balance)+" Credit","currency": "CREDIT","raw_value": str(int(card.content)+ds.balance)},"integrated_account": True}}
    card.used = True
    card.save()
