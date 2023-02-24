@@ -1,0 +1,1 @@
+{% extends 'header.xml' %}{% block main %}<GetChallengeResponse xmlns="urn:ias.wsapi.broadon.com"><Version>2.0</Version><DeviceId>{{ id }}</DeviceId><MessageId>{{ message }}</MessageId><TimeStamp>{{ time }}</TimeStamp><ErrorCode>0</ErrorCode><ServiceStandbyMode>false</ServiceStandbyMode><Challenge>526726942</Challenge></GetChallengeResponse>{% endblock %}

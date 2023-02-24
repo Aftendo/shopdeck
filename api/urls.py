@@ -1,0 +1,37 @@
+from django.urls import path
+
+from . import views
+
+urlpatterns = [
+    path('service_hosts', views.service_hosts, name='servicehosts'),
+    path('country/<str:country>', views.country, name='country'),
+    path('my/session/!open', views.open, name='opensession'),
+    path('my/session/!open_without_nna', views.open, name='opensession_withoutnna'),
+    path('my/session/!close', views.close, name="endsession"),
+    path('my/balance/current', views.balance, name="balance"),
+    path('my/wishlist/notice', views.dummy_wishlist, name="wishlist"),
+    path('my/wishlist/!put', views.put_wishlist, name="wishlist"),
+    path('my/wishlist/<int:tid>/!delete', views.delete_wishlist, name="wishlist"),
+    path('my/wishlist', views.wishlist, name='mywishlist'),
+    path('my/shared_titles', views.shared_titles, name='shared_titles'),
+    path('my/owned_coupons', views.owned_coupons, name="ownedcoupons"),
+    path('my/shared_title_ids', views.ownedtitles, name="sharedtitleids"),
+    path('my/language', views.language, name='language'),
+    path('my/account/ctr/!migrate_without_nna', views.empty, name="migrate"),
+    path('my/npns_status', views.empty, name="npns_status"),
+    path('my/parental_control/!put', views.empty, name="parental_control"),
+    path('<str:country>/titles/online_prices', views.online_price, name="online_prices"),
+    path('<str:country>/title/<int:tid>/ec_info', views.ec_info, name="ecinfo"),
+    path('<str:country>/title/<int:tid>/prepurchase_info', views.prepurchase_info, name="prepurchase"),
+    path('<str:country>/title/<int:tid>/!purchase', views.purcahse_title, name="purchase"),
+    path('<str:country>/title/<int:tid>/!redeem', views.redeem_title, name="redeemtitle"),
+    path('<str:country>/title/public_status', views.public_status, name="publicstatus"),
+    path('redeemable_card/!check', views.check_redeemable, name="checkredeem"),
+    path('my/balance/prereplenish_info', views.pretransac_redeem, name="testredeem"),
+    path('my/balance/current/!add_prepaid', views.add_money_prepaid, name="prepaid"),
+    path('my/tax_location', views.tax_location, name="taxloc"),
+    path('my/transactions', views.transactions, name="transactions"),
+    path('my/votes', views.votes, name="votes"),
+    path('my/votable_titles/!put', views.votable_titles, name="votable_titles"),
+    path('titles/id_pair', views.id_pair, name="id_pair"),
+]
