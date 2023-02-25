@@ -1,11 +1,9 @@
-from django.shortcuts import render
 from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
 from shopdeck import settings
 from shopdeckdb.models import *
 from django.core.exceptions import ObjectDoesNotExist
 from urllib.parse import unquote
-from dateutil import relativedelta
 import datetime
 @csrf_exempt
 def news(request, region):

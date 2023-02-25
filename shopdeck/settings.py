@@ -129,5 +129,8 @@ METADATA_API_URL = "api.example.com"
 # TOS
 TOS_ESHOP = "This is YOUR own custom shop!\nStart customizing it!\n(change this message in shopdeck/settings.py)"
 
+# Enable if maintenance is necessary
+IN_MAINTENANCE = False
+
 #dont touch
 SESSION_COOKIE_NAME = "JSESSIONID"
