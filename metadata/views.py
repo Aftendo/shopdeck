@@ -11,6 +11,8 @@ def news(request, region):
     allnews = []
     for ann in news:
         ann.content = ann.content.replace("\\n", "\n")
+        if ann.is_banner:
+            ann.content = "(banner:1)"+ann.content
         result = {"headline": ann.title, "description": ann.content, "date":int(ann.date.timestamp())}
         if ann.is_banner:
             result.update(images={"image":[{"index": 1, "type": "banner", "url": ann.banner_url, "height": 126, "width": 300}]})
