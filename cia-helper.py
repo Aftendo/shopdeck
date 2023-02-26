@@ -30,7 +30,21 @@ try:
                     chunks = [ chunk for chunk in cia.tmd.chunk_records if chunk.cindex in cia.contents ]
                     filename = chunks[0].id.upper()
                     with open(filename+".app", 'wb') as file:
-                        file.write(cia.open_raw_section(CIASection.Application).read())
+                        file.write(cia.open_raw_section(CIASection.Application).read())    
+                    try:
+                        filename = chunks[1].id.upper()    
+                        with open(filename+".app", "wb") as file:
+                            file.write(cia.open_raw_section(CIASection.Manual).read())
+                        print("Note: a manual has been found and extracted to "+filename+".app.")
+                    except IndexError:
+                        pass    
+                    try:
+                        filename = chunks[2].id.upper()    
+                        with open(filename+".app", "wb") as file:
+                            file.write(cia.open_raw_section(CIASection.DownloadPlayChild).read())
+                        print("Note: a download play app has been found and extracted to "+filename+".app.")
+                    except IndexError:
+                        pass             
                     with open("tmd.bin", 'wb') as file:
                         file.write(cia.open_raw_section(CIASection.TitleMetadata).read())
                     with open("ticket.txt", 'wb') as file:
@@ -45,4 +59,4 @@ try:
     except InvalidCIAError:
         print("Your file is not a CIA.")
 except:
-    print("Something wrong happened. Sorry! (try again)")
+    print("Something wrong happened. Sorry! (try again)")﻿
