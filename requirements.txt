@@ -7,3 +7,4 @@ pyOpenSSL==23.0.0
 django-admin-interface==0.24.2
 django-colorfield==0.8.0
 python-dateutil>=2.8.1
+xmltodict==0.13.0
