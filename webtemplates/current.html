@@ -1,0 +1,15 @@
+{% extends '_layout.html' %}
+{% block main %}
+<h1>Your balance</h1>
+<p>Here is your actual balance: <b>{{ user.linked_ds.balance }} Credit</b></p>
+<h2>Add balance</h2>
+<p>You can add Credit to your account via {{ WEBUI_NAME }} cards, of various amounts: 10, 50, 100...</p>
+<i>please note that these cards can be used ONCE, and never again.</i>
+<form method="GET" action="/ecommerce/add">
+    <div class="input-group mb-3">
+        <span class="input-group-text bg-dark text-white" id="basic-addon1">Card code</span>
+        <input type="text" class="form-control bg-dark text-white" name="card" placeholder="Card code" aria-label="Card code" aria-describedby="basic-addon1">
+    </div>      
+    <input type="submit" class="btn btn-success" value="Go!">
+</form>
+{% endblock %}

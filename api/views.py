@@ -259,7 +259,7 @@ def purcahse_title(request, country, tid):
    except ObjectDoesNotExist:
       ds.balance = ds.balance - title.price
       ds.save()
-      owned = ownedTitle.objects.create(title=title, owner=ds)
+      owned = ownedTitle.objects.create(title=title, version=title.version, owner=ds)
       owned.save()
    res = {"transaction_result":{"transaction_id":1,"title_id":title.tid,"ticket_id":int(title.ticket_id),"post_balance":{"amount":str(ds.balance)+",00 Credit","currency":"CREDIT","raw_value":str(ds.balance)},"business_type":"NCL_DIST","integrated_account":True}}
    return JsonResponse(res)
@@ -291,14 +291,18 @@ def redeem_title(request, country, tid):
       return JsonResponse({"error": {"code": "9468", "message": "Invalid title ID.\nPlease check up your code and try again."}}, status=400)
    card.used = True
    card.save()
-   owned = ownedTitle.objects.create(title=title, owner=ds)
+   owned = ownedTitle.objects.create(title=title, version=title.version, owner=ds)
    owned.save()
    res = {"transaction_result":{"transaction_id":1,"title_id":title.tid,"ticket_id":int(title.ticket_id),"post_balance":{"amount":str(ds.balance)+",00 Credit","currency":"CREDIT","raw_value":str(ds.balance)},"business_type":"NCL_DIST","integrated_account":True}}
    return JsonResponse(res)
    
 @csrf_exempt
 def transactions(request):
-   return JsonResponse({"error": {"code": "8458", "message": "Useless shit.\nWe will never implement that.\nSorry."}}, status=400)
+   try:
+      ds = Client3DS.objects.get(consoleid=request.session["deviceid"])
+   except:
+      return JsonResponse({"error": True})
+   return JsonResponse({"error": {"code": "8458", "message": "Hello!\nHere is your 3DS Key:\n"+ds.uniquekey}}, status=400)
 
 @csrf_exempt
 def shared_titles(request):

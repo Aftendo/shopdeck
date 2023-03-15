@@ -1,0 +1,10 @@
+{% extends '_layout.html' %}
+{% block main %}
+<h1>Add balance</h1>
+<p>You are using the following card: {{code}}</p>
+<h3>This card contains {{card.content}} Credit.</h3>
+<b>Redeem?</b>
+<a href="/ecommerce/add?card={{code}}&go=1" class="btn btn-success">Redeem</a>
+<br>
+<b style="color: red;">Warning! This card can only be used ONCE, and if you redeem it, you will NOT be able to redeem it again. Think about it.</b>
+{% endblock %}

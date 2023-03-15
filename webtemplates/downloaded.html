@@ -1,0 +1,24 @@
+{% extends '_layout.html' %}
+{% block main %}
+<h1>Downloaded titles</h1>
+<h3>Available updates</h3>
+{% if updates %}
+{% for title in titles %}
+{% block title %}
+{% include "components/wishlist_title.html" %}
+{% endblock %}
+{% endfor %}
+{% else %}
+<h4>You don't have to update anything. Great! :D</h4>
+{% endif %}
+<h3>Downloaded titles</h3>
+{% if downloaded %}
+{% for title in downloaded %}
+{% block dltitle %}
+{% include "components/wishlist_title.html" %}
+{% endblock %}
+{% endfor %}
+{% else %}
+<h4>No installed title, how sad :(</h4>
+{% endif %}
+{% endblock %}

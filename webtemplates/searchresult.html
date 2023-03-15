@@ -1,0 +1,13 @@
+{% extends '_layout.html' %}
+{% block main %}
+<h1>Results for {{query}}</h1>
+{% if results %}
+{% for title in results %}
+{% block title %}
+{% include "components/title.html" %}
+{% endblock %}
+{% endfor %}
+{% else %}
+<h4>No results were found.</h4>
+{% endif %}
+{% endblock %}

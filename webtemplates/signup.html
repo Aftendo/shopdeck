@@ -1,0 +1,42 @@
+{% extends '_layout_form.html' %}
+{% block main %}
+<form method="POST">
+{% csrf_token %}
+<div class="mb-md-5 mt-md-4 pb-5">
+
+    <h2 class="fw-bold mb-2 text-uppercase">Sign Up</h2>
+    <p class="text-white-50 mb-2">Sign Up to access Web UI.</p>
+    {% if message %}
+    <p style="color: red;">{{ message }}</p>
+    {% endif %}
+    <div class="form-outline form-white mb-4">
+      <input type="text" id="typeUsernameX" name="username" class="form-control form-control-lg" />
+      <label class="form-label" for="typeEmailX">Username</label>
+      <div class="form-notch"><div class="form-notch-leading" style="width: 9px;"></div><div class="form-notch-middle" style="width: 64.8px;"></div><div class="form-notch-trailing"></div></div>
+    </div>
+    <div class="form-outline form-white mb-4">
+      <input type="email" id="typeEmailX" name="email" class="form-control form-control-lg" />
+      <label class="form-label" for="typeEmailX">Email</label>
+      <div class="form-notch"><div class="form-notch-leading" style="width: 9px;"></div><div class="form-notch-middle" style="width: 64.8px;"></div><div class="form-notch-trailing"></div></div>
+    </div>
+    <div class="form-outline form-white mb-4">
+      <input type="text" id="typeUsernameX" name="3dskey" class="form-control form-control-lg" />
+      <label class="form-label" for="typeEmailX">3DS Key</label>
+      <div class="form-notch"><div class="form-notch-leading" style="width: 9px;"></div><div class="form-notch-middle" style="width: 64.8px;"></div><div class="form-notch-trailing"></div></div>
+    </div>
+    <div class="form-outline form-white mb-4">
+      <input type="password" id="typePasswordX" name="password" class="form-control form-control-lg" />
+      <label class="form-label" for="typePasswordX">Password</label>
+      <div class="form-notch"><div class="form-notch-leading" style="width: 9px;"></div><div class="form-notch-middle" style="width: 64.8px;"></div><div class="form-notch-trailing"></div></div>
+    </div>
+    <div class="form-outline form-white mb-4">
+      <input type="password" id="typePasswordX" name="passwordconfirm" class="form-control form-control-lg" />
+      <label class="form-label" for="typePasswordX">Confirm Password</label>
+      <div class="form-notch"><div class="form-notch-leading" style="width: 9px;"></div><div class="form-notch-middle" style="width: 64.8px;"></div><div class="form-notch-trailing"></div></div>
+    </div>
+    <button class="btn btn-outline-light btn-lg px-5" type="submit">Sign Up</button>
+
+  </div>
+
+</form>
+{% endblock %}

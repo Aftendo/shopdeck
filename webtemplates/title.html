@@ -1,0 +1,33 @@
+{% extends '_layout.html' %}
+{% block main %}
+<h1>{{app.name}}</h1>
+<br>
+<div class="d-flex">
+<img src="{{app.thumbnail_url}}" alt="thumb">
+<div class="ms-2">
+    {% if wishlisted %}
+    <a class="btn btn-danger" href="/wishlist/remove?id={{app.id}}&redirect=/title/{{app.id}}"><li class="fa-solid fa-remove"></li>Remove from wishlist</a>
+    {% else %}
+    <a class="btn btn-warning" href="/wishlist/add?id={{app.id}}"><li class="fa-solid fa-add"></li>Add to wishlist</a>
+    {% endif %}
+    <h2>Price: {{ app.price }} Credit</h2>
+    <h4><i>{% if app.is_not_available %}Not available{% else %}Available now{% endif %}</i></h4>
+</div>
+</div>
+<br>
+<br>
+<h2>Description</h2>
+{% autoescape off %}
+<p>{{ app.desc }}</p>
+{% endautoescape %}
+<h3>Details</h3>
+<div class="detail-box">
+    <p>Publisher: {{app.publisher.publisher_name}}</p>
+    <p class="ms-5">Genre: {{app.genre.name}}</p>
+</div>
+<br>
+<div class="detail-box">
+    <p>Platform: {{app.platform.name}}</p>
+    <p class="ms-5">Release date: {{app.date}}</p>
+</div>
+{% endblock %}

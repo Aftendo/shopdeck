@@ -1,0 +1,14 @@
+{% extends '_layout.html' %}
+{% block main %}
+<h1>Wishlist</h1>
+<h3>Here is all of your wishlisted titles!</h3>
+{% if wishlist %}
+{% for title in wishlist %}
+{% block title %}
+{% include "components/wishlist_title.html" %}
+{% endblock %}
+{% endfor %}
+{% else %}
+<h4>You don't have any wishlisted titles.</h4>
+{% endif %}
+{% endblock %}

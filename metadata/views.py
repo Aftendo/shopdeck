@@ -127,7 +127,7 @@ def title(request, region, tid):
         title = Title.objects.get(id=tid)
     except ObjectDoesNotExist:
         return JsonResponse({"error": True})
-    title.desc = title.desc.replace("\\n", "\n")
+    title.desc = title.desc.replace("\n", "\n<br>")
     if title.is_not_downloadable:
         is_downloadable = False
     else:

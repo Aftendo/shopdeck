@@ -1,0 +1,12 @@
+{% extends '_layout.html' %}
+{% block main %}
+<h1>Thank You!</h1>
+<h3>{{card.content}} Credit has been added to your account.</h3>
+<b>Your balance is now {{newamount}} Credit.</b>
+<br>
+<b>Note: you need to restart the Nintendo eShop on your 3DS to see the updated balance.</b>
+<br>
+<i>This card has beeen successfully used and cannot be used again.</i>
+<br>
+<a href="/ecommerce/current" class="btn btn-primary">Go back to your balance</a>
+{% endblock %}

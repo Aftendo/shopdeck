@@ -1,4 +1,5 @@
 from django.db import models
+from django.contrib.auth.models import AbstractUser
 
 # Create your models here.
 
@@ -11,8 +12,12 @@ class Client3DS(models.Model):
     language = models.CharField(max_length=3, null=False)
     region = models.CharField(max_length=3, null=False)
     country = models.CharField(max_length=3, null=False)
+    uniquekey = models.CharField(max_length=10, null=False)
     def __str__(self):
         return "3DS "+self.consoleid
+
+class User(AbstractUser):
+    linked_ds = models.ForeignKey(Client3DS, null=True, on_delete=models.CASCADE)
 
 class customTitleID(models.Model):
     tid = models.CharField(max_length=18, null=False)
@@ -93,6 +98,7 @@ class movie(models.Model):
 
 class ownedTitle(models.Model):
     title = models.ForeignKey(Title, null=False, on_delete=models.CASCADE)
+    version = models.IntegerField(null=False)
     owner = models.ForeignKey(Client3DS, null=False, on_delete=models.CASCADE)
     def __str__(self):
         return "Title "+self.title.name+" owned by "+self.owner.consoleid

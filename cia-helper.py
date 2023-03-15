@@ -59,4 +59,4 @@ try:
     except InvalidCIAError:
         print("Your file is not a CIA.")
 except:
-    print("Something wrong happened. Sorry! (try again)")﻿
+    print("Something wrong happened. Sorry! (try again)")

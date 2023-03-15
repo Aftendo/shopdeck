@@ -1,0 +1,12 @@
+{% extends '_layout.html' %}
+{% block main %}
+<h1>Search</h1>
+<p>Hi! Here you can search for some titles :)</p>
+<form method="GET" action="/search">
+    <div class="input-group mb-3">
+        <span class="input-group-text bg-dark text-white" id="basic-addon1">Title name</span>
+        <input type="text" class="form-control bg-dark text-white" name="query" placeholder="Title name..." aria-label="Title name..." aria-describedby="basic-addon1">
+    </div>      
+    <input type="submit" class="btn btn-success" value="Go!">
+</form>
+{% endblock %}

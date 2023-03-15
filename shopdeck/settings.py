@@ -20,7 +20,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/4.1/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'somestring'
+SECRET_KEY = 'django-insecure-1o&xlvoqsao=6i#h0kg6)n8xnte8%x7#ll7n4ky8ppgbo!=0bu'
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
@@ -59,7 +59,7 @@ ROOT_URLCONF = 'shopdeck.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
+        'DIRS': [BASE_DIR / 'webtemplates'],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -135,5 +135,16 @@ TOS_ESHOP = "This is YOUR own custom shop!\nStart customizing it!\n(change this 
 # Enable if maintenance is necessary
 IN_MAINTENANCE = False
 
-#dont touch
+# Name of the web interface
+WEBUI_NAME = "Shopdeck"
+
+#dont touch all of this
 SESSION_COOKIE_NAME = "JSESSIONID"
+
+STATIC_ROOT = "_static"
+
+STATICFILES_DIRS = [
+    BASE_DIR / "static",
+]
+
+AUTH_USER_MODEL = "shopdeckdb.User" 

@@ -1,0 +1,9 @@
+<div class="card bg-dark" style="width: 13rem; display: inline-block;">
+    <img src="{{ title.title.thumbnail_url }}" class="card-img-top" alt="Title thumbnail">
+    <div class="card-body">
+      <h5 class="card-title">{{ title.title.name }}</h5>
+      <p class="card-text">by {{ title.title.publisher.publisher_name }}</p>
+      <a href="/title/{{ title.title.id }}" class="btn btn-primary">View more</a>
+      {% if wishlistedpage == "yes" %}<a href="/wishlist/remove?id={{title.title.id}}&redirect=/wishlist" class="btn btn-danger"><i class="fa-solid fa-xl fa-remove"></i>Remove from wishlist</a>{% endif %}
+    </div>
+</div>

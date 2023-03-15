@@ -16,8 +16,12 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path, include
 
+handler404 = 'webui.views.err404'
+handler500 = 'webui.views.err500'
+
 urlpatterns = [
     path('admin/', admin.site.urls),
+    path('', include('webui.urls')),
     path('ninja/ws/', include('api.urls')),
     path('samurai/ws/<str:region>/', include('metadata.urls')),
 ]
