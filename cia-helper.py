@@ -17,7 +17,6 @@ try:
                 with CIAReader(sys.argv[1]) as cia:
                     print("Welcome to CIA Helper! This tool is designed to help you adding a homebrew to Let's Shop.")
                     print("If the title needs to be downloaded with a redeemable card, please make the id like: 50000000000000")
-                    print("For the ticket id, put anything you want (in numbers), but be sure it starts by: 12")
                     print('Title ID:', cia.tmd.title_id.upper())
                     print('Title Version:',cia.tmd.title_version.__index__())
                     app = cia.contents[CIASection.Application]
@@ -46,11 +45,8 @@ try:
                     except IndexError:
                         pass             
                     with open("tmd.bin", 'wb') as file:
-                        file.write(cia.open_raw_section(CIASection.TitleMetadata).read())
-                    with open("ticket.txt", 'wb') as file:
-                        file.write(base64.b64encode(cia.open_raw_section(CIASection.Ticket).read()))
+                        file.write(cia.open_raw_section(CIASection.TitleMetadata).read()
                     print('Finished! You can now put the tmd.bin and the .app file in cdn/'+cia.tmd.title_id.upper()+' (create the folder)')
-                    print('Your base64-encoded ticket is available in ticket.txt.')
                     print('Have a great day!')
             except BootromNotFoundError:
                 print("Necessary files were not found. Please create a '3ds' directory in your home folder and put boot9.bin in it.")
