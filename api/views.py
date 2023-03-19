@@ -21,6 +21,9 @@ def country(request, country):
 
 @csrf_exempt
 def open(request):
+   if request.headers.get("User-Agent") != None:
+      if request.headers.get("User-Agent").startswith("MINT"):
+         return JsonResponse({"error": {"code": "5465", "message": "This functionnality is not working yet."}}, status=400)
    data = request.POST
    if data.get("device_id")==None:
       return JsonResponse({"error": True})
