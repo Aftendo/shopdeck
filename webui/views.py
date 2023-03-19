@@ -194,6 +194,8 @@ def search(request):
     updates = len(titles)
     if request.GET.get("query") == None:
         return render(request, "search.html", {"title": "Search", "WEBUI_NAME":WEBUI_NAME, "user": request.user,"updates": updates})
+    if not request.GET.get("query"):
+        return render(request, "_error.html", {"title": "Error", "WEBUI_NAME":WEBUI_NAME, "user": request.user,"updates": updates, "message": "Nothing was put as the title name."})
     else:
         searched = Title.objects.filter(name__icontains=request.GET.get("query")).order_by('-date')
         return render(request, "searchresult.html", {"title": "Results for "+request.GET.get("query"), "WEBUI_NAME": WEBUI_NAME, "user": request.user, "updates": updates, "results": searched, "query": request.GET.get("query")})
