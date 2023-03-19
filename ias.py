@@ -6,6 +6,8 @@ application = get_wsgi_application()
 from shopdeckdb.models import *
 from django.core.exceptions import ObjectDoesNotExist
 
+print("IAS Starting Up")
+
 ias = Blueprint("ias", "ias")
 @ias.route("/ias/services/IdentityAuthenticationSOAP", methods=['POST'])
 def soap():

@@ -8,6 +8,8 @@ from django.core.exceptions import ObjectDoesNotExist
 from shopdeck import settings
 from io import BytesIO
 
+print("ECS Starting Up")
+
 #generate totally-genuine-devicetoken
 def id_generator(size=21, chars=string.ascii_uppercase + string.ascii_lowercase + string.digits):
     return ''.join(random.choice(chars) for _ in range(size))

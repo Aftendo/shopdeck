@@ -5,6 +5,9 @@ from shopdeckdb.models import *
 from django.core.exceptions import ObjectDoesNotExist
 from urllib.parse import unquote
 import datetime
+
+print("Metadata Starting Up")
+
 @csrf_exempt
 def news(request, region):
     news = announcement.objects.all().order_by("-date")

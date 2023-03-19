@@ -7,6 +7,8 @@ from django.core.exceptions import ValidationError, ObjectDoesNotExist
 from shopdeck.settings import WEBUI_NAME
 # Create your views here.
 
+print("WebUI Starting Up")
+
 def index(request):
     if not request.user.is_authenticated:
         return render(request, "welcome.html", {"WEBUI_NAME": WEBUI_NAME})

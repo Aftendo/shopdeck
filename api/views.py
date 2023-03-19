@@ -6,6 +6,8 @@ from shopdeckdb.models import *
 from django.core.exceptions import ObjectDoesNotExist
 import time, random, string, os
 
+print("API Starting Up")
+
 def id_generator(size=32, chars=string.ascii_uppercase + string.digits):
     return ''.join(random.choice(chars) for _ in range(size))
 

@@ -6,6 +6,8 @@ application = get_wsgi_application()
 from shopdeckdb.models import *
 from django.core.exceptions import ObjectDoesNotExist
 
+print("CAS Starting Up")
+
 cas = Blueprint("cas", "cas")
 @cas.route("/cas/services/CatalogingSOAP", methods=['POST'])
 def soap():
