@@ -4,7 +4,7 @@ from django.views.decorators.csrf import csrf_exempt
 from shopdeck import settings
 from shopdeckdb.models import *
 from django.core.exceptions import ObjectDoesNotExist
-import time, random, string
+import time, random, string, os
 
 def id_generator(size=32, chars=string.ascii_uppercase + string.digits):
     return ''.join(random.choice(chars) for _ in range(size))
@@ -259,9 +259,9 @@ def purcahse_title(request, country, tid):
    except ObjectDoesNotExist:
       ds.balance = ds.balance - title.price
       ds.save()
-      owned = ownedTitle.objects.create(title=title, version=title.version, owner=ds)
+      owned = ownedTitle.objects.create(title=title, ticketid=(b'\x00\x04'+ os.urandom(6)).hex(), version=title.version, owner=ds)
       owned.save()
-   res = {"transaction_result":{"transaction_id":1,"title_id":title.tid,"ticket_id":int(title.ticket_id),"post_balance":{"amount":str(ds.balance)+",00 Credit","currency":"CREDIT","raw_value":str(ds.balance)},"business_type":"NCL_DIST","integrated_account":True}}
+   res = {"transaction_result":{"transaction_id":1,"title_id":title.tid,"ticket_id":int(owned.ticketid, base=16),"post_balance":{"amount":str(ds.balance)+",00 Credit","currency":"CREDIT","raw_value":str(ds.balance)},"business_type":"NCL_DIST","integrated_account":True}}
    return JsonResponse(res)
 
 @csrf_exempt
@@ -291,9 +291,10 @@ def redeem_title(request, country, tid):
       return JsonResponse({"error": {"code": "9468", "message": "Invalid title ID.\nPlease check up your code and try again."}}, status=400)
    card.used = True
    card.save()
-   owned = ownedTitle.objects.create(title=title, version=title.version, owner=ds)
+   tikid = (b'\x00\x04'+ os.urandom(6)).hex()
+   owned = ownedTitle.objects.create(title=title, version=title.version, ticketid=tikid, owner=ds)
    owned.save()
-   res = {"transaction_result":{"transaction_id":1,"title_id":title.tid,"ticket_id":int(title.ticket_id),"post_balance":{"amount":str(ds.balance)+",00 Credit","currency":"CREDIT","raw_value":str(ds.balance)},"business_type":"NCL_DIST","integrated_account":True}}
+   res = {"transaction_result":{"transaction_id":1,"title_id":title.tid,"ticket_id":int(tikid, base=16),"post_balance":{"amount":str(ds.balance)+",00 Credit","currency":"CREDIT","raw_value":str(ds.balance)},"business_type":"NCL_DIST","integrated_account":True}}
    return JsonResponse(res)
    
 @csrf_exempt

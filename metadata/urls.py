@@ -18,5 +18,6 @@ urlpatterns = [
     path('contents', views.contents, name="contents"),
     path('titles', views.titles, name="titles"),
     path('movies', views.movies_content, name="movies"),
-    path('rankings', views.rankings, name="rankings")
+    path('rankings', views.rankings, name="rankings"),
+    path('ranking/<int:rid>', views.ranking, name="ranking")
 ]

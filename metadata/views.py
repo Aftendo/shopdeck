@@ -326,6 +326,19 @@ def movies_content(request, region):
     res = {"contents": {"content": all_movies, "length": len(all_movies), "offset": int(request.GET.get("offset")), "total": total}}
     return JsonResponse(res)
 
+#Until I get the time to implement proper rankings (quite complicated)
 @csrf_exempt
 def rankings(request, region):
-    return JsonResponse({"error": {"code": "5626", "message": "WIP. Not ready yet."}}, status=400)
+    platforms = platform.objects.all().order_by('-id')
+    pf = []
+    for aplatform in platforms:
+        pf.append({"name": aplatform.name, "id": aplatform.id})
+    if pf == []:
+        res = {"rankings": {"ranking": []}, "length": 0}
+    else:
+        res = {"rankings": {"ranking": [{"name": "All software", "filters": {"filter": pf}, "type": "title", "id": 1}]}, "length": 1}
+    return JsonResponse(res)
+
+@csrf_exempt
+def ranking(request, region, rid):
+    return JsonResponse({"error": {"code": "5654", "message": "wip"}}, status=400)

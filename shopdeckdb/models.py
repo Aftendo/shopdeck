@@ -6,13 +6,14 @@ from django.contrib.auth.models import AbstractUser
 class Client3DS(models.Model):
     id = models.IntegerField(primary_key=True, blank=True)
     consoleid = models.CharField(max_length=12, null=False)
+    devicecert_consoleid = models.CharField(max_length=8, null=True, blank=True)
     devicetoken = models.CharField(max_length=21, null=False)
     is_terminated = models.BooleanField(default=False)
     balance = models.IntegerField(default=0)
     language = models.CharField(max_length=3, null=False)
     region = models.CharField(max_length=3, null=False)
     country = models.CharField(max_length=3, null=False)
-    uniquekey = models.CharField(max_length=10, null=False)
+    uniquekey = models.CharField(max_length=21, null=False)
     def __str__(self):
         return "3DS "+self.consoleid
 
@@ -75,12 +76,10 @@ class Title(models.Model):
     price = models.IntegerField(default=0, null=False)
     version = models.IntegerField(default=1024)
     is_not_downloadable = models.BooleanField(default=False)
-    ticket_id = models.CharField(max_length=16, null=False)
-    ticket = models.TextField(null=False)
     size = models.IntegerField(default=0)
     ticket_available = models.BooleanField(default=True)
     def __str__(self):
-        return self.name+" by "+self.publisher.publisher_name+" published on "+str(self.date)
+        return self.name+" by "+self.publisher.publisher_name+" published on "+str(self.date)    
 
 class movie(models.Model):
     id = models.IntegerField(primary_key=True, blank=True)
@@ -98,6 +97,7 @@ class movie(models.Model):
 
 class ownedTitle(models.Model):
     title = models.ForeignKey(Title, null=False, on_delete=models.CASCADE)
+    ticketid = models.CharField(max_length=16, null=False)
     version = models.IntegerField(null=False)
     owner = models.ForeignKey(Client3DS, null=False, on_delete=models.CASCADE)
     def __str__(self):
