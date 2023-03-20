@@ -18,8 +18,8 @@ def index(request):
         if title.title.version > title.version:
             titles.append(title)
     updates = len(titles)
-    recent = Title.objects.all().order_by('-date')[0:12+12]
-    random = Title.objects.all().order_by('?')[0:12+12]
+    recent = Title.objects.filter(public=True).order_by('-date')[0:12+12]
+    random = Title.objects.filter(public=True).order_by('?')[0:12+12]
     return render(request, "index.html", {"title": "Home", "WEBUI_NAME": WEBUI_NAME, "user": request.user, "updates": updates, "random": random, "recent": recent})
 
 def title(request, tid):
@@ -30,7 +30,7 @@ def title(request, tid):
             titles.append(title)
     updates = len(titles)
     try:
-        title = Title.objects.get(id=tid)
+        title = Title.objects.get(id=tid, public=True)
     except ObjectDoesNotExist:
         raise Http404()
     try:
@@ -46,7 +46,7 @@ def add_wishlist(request):
     if id==None:
         return HttpResponse("could not parse request")
     try:
-        title = Title.objects.get(id=int(id))
+        title = Title.objects.get(id=int(id), public=True)
     except ObjectDoesNotExist:
         raise Http404()
     try:
@@ -64,7 +64,7 @@ def remove_wishlist(request):
     if request.GET.get("redirect")==None:
         return HttpResponse("could not parse request")
     try:
-        title = Title.objects.get(id=int(id))
+        title = Title.objects.get(id=int(id), public=True)
     except ObjectDoesNotExist:
         raise Http404()
     try:
@@ -199,7 +199,7 @@ def search(request):
     if not request.GET.get("query"):
         return render(request, "_error.html", {"title": "Error", "WEBUI_NAME":WEBUI_NAME, "user": request.user,"updates": updates, "message": "Nothing was put as the title name."})
     else:
-        searched = Title.objects.filter(name__icontains=request.GET.get("query")).order_by('-date')
+        searched = Title.objects.filter(name__icontains=request.GET.get("query"), public=True).order_by('-date')
         return render(request, "searchresult.html", {"title": "Results for "+request.GET.get("query"), "WEBUI_NAME": WEBUI_NAME, "user": request.user, "updates": updates, "results": searched, "query": request.GET.get("query")})
 
 def err404(request, exception):
