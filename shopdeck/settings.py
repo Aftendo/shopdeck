@@ -126,17 +126,17 @@ STATIC_URL = 'static/'
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 # Server URLS (dont include a trailing slash at the end)
-SOAP_URL = "ecs.c.shop.nintendowifi.net"
-METADATA_API_URL = "ninja.ctr.shop.nintendo.net"
+SOAP_URL = "soap.example.com"
+METADATA_API_URL = "api.example.com"
 
 # TOS
-TOS_ESHOP = "Welcome to Let's Shop!\n\nThis is an unofficial service meant to \nreplace the now defunct eShop servers.\n\nWe do not offer official apps/games, but however we do offer some homebrews!\n\nEnjoy!"
+TOS_ESHOP = "This is YOUR own custom shop!\nStart customizing it!\n(change this message in shopdeck/settings.py)"
 
 # Enable if maintenance is necessary
 IN_MAINTENANCE = False
 
 # Name of the web interface
-WEBUI_NAME = "LS Beta 1"
+WEBUI_NAME = "Shopdeck"
 
 #dont touch all of this
 SESSION_COOKIE_NAME = "JSESSIONID"
