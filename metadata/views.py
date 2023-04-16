@@ -127,9 +127,9 @@ def directory(request, region, cid):
 @csrf_exempt
 def title(request, region, tid):
     try:
-        title = Title.objects.get(id=tid)
+        title = Title.objects.get(id=tid, public=True)
     except ObjectDoesNotExist:
-        return JsonResponse({"error": True})
+        return JsonResponse({"error": {"code": "5668", "message": "Title does not exists."}})
     title.desc = title.desc.replace("\n", "\n<br>")
     if title.is_not_downloadable:
         is_downloadable = False

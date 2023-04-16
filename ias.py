@@ -24,7 +24,15 @@ def soap():
             ds = Client3DS.objects.get(consoleid=parsed['SOAP-ENV:Envelope']['SOAP-ENV:Body']['ias:SetIVSData']['ias:DeviceId'])
         except ObjectDoesNotExist:
             return "Error"
-        r = make_response(render_template("ias/setIVSData.xml", id=ds.consoleid, message=parsed['SOAP-ENV:Envelope']['SOAP-ENV:Body']['ias:SetIVSData']['ias:MessageId'],time=int(round(time.time()*1000))))
+        r = make_response(render_template("ias/setIVSData.xml", id=ds.consoleid, message=parsed['SOAP-ENV:Envelope']['SOAP-ENV:Body']['ias:SetIVSData']['ias:MessageId'],time=int(round(time.time()*1000)), iasname="SetIVSDataResponse"))
+        r.headers.set("Content-Type", "text/xml; charset=utf-8")
+        return r
+    if 'ias:SetCountry' in parsed['SOAP-ENV:Envelope']['SOAP-ENV:Body']:
+        try:
+            ds = Client3DS.objects.get(consoleid=parsed['SOAP-ENV:Envelope']['SOAP-ENV:Body']['ias:SetCountry']['ias:DeviceId'])
+        except ObjectDoesNotExist:
+            return "Error"
+        r = make_response(render_template("ias/setIVSData.xml", id=ds.consoleid, message=parsed['SOAP-ENV:Envelope']['SOAP-ENV:Body']['ias:SetCountry']['ias:MessageId'],time=int(round(time.time()*1000)), iasname="SetCountryResponse"))
         r.headers.set("Content-Type", "text/xml; charset=utf-8")
         return r
     if 'ias:GetChallenge' in parsed['SOAP-ENV:Envelope']['SOAP-ENV:Body']:
@@ -37,7 +45,6 @@ def soap():
         return r
     if 'ias:Register' in parsed['SOAP-ENV:Envelope']['SOAP-ENV:Body']:
         if str(parsed['SOAP-ENV:Envelope']['SOAP-ENV:Body']['ias:Register']['ias:Challenge']) != '526726942':
-            print(parsed['SOAP-ENV:Envelope']['SOAP-ENV:Body']['ias:Register']['ias:Challenge'])
             return "Error"
         try:
             ds = Client3DS.objects.get(consoleid=parsed['SOAP-ENV:Envelope']['SOAP-ENV:Body']['ias:Register']['ias:DeviceId'])
@@ -55,5 +62,15 @@ def soap():
             return "Error"
         ds.delete()
         r = make_response(render_template("ias/unregister.xml", id=parsed['SOAP-ENV:Envelope']['SOAP-ENV:Body']['ias:Unregister']['ias:DeviceId'], message=parsed['SOAP-ENV:Envelope']['SOAP-ENV:Body']['ias:Unregister']['ias:MessageId'],time=int(round(time.time()*1000))))
+        r.headers.set("Content-Type", "text/xml; charset=utf-8")
+        return r
+    if 'ias:GetRegistrationInfo' in parsed['SOAP-ENV:Envelope']['SOAP-ENV:Body']:
+        if str(parsed['SOAP-ENV:Envelope']['SOAP-ENV:Body']['ias:GetRegistrationInfo']['ias:Challenge']) != '526726942':
+            return "Error"
+        try:
+            ds = Client3DS.objects.get(consoleid=parsed['SOAP-ENV:Envelope']['SOAP-ENV:Body']['ias:GetRegistrationInfo']['ias:DeviceId'])
+        except ObjectDoesNotExist:
+            return "Error"
+        r = make_response(render_template("ias/getRegistrationInfo.xml", id=ds.consoleid, message=parsed['SOAP-ENV:Envelope']['SOAP-ENV:Body']['ias:GetRegistrationInfo']['ias:MessageId'],time=int(round(time.time()*1000)), accountid=ds.id, devicetoken=ds.devicetoken, country=ds.country))
         r.headers.set("Content-Type", "text/xml; charset=utf-8")
         return r

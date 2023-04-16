@@ -5,6 +5,7 @@ from shopdeck import settings
 from shopdeckdb.models import *
 from django.core.exceptions import ObjectDoesNotExist
 import time, random, string, os
+from django.contrib.sessions.backends.db import SessionStore
 
 print("API Starting Up")
 
@@ -18,14 +19,11 @@ def service_hosts(request):
 
 @csrf_exempt
 def country(request, country):
-   res = {"country_detail":{"region_code":"LOL","max_cash":{"amount":"99999,00 Credit","currency":"CREDIT","raw_value":"99999"},"loyalty_system_available":False,"legal_payment_message_required":False,"legal_business_message_required":False,"tax_excluded_country":False,"tax_free_country":False,"prepaid_card_available":True,"credit_card_available":False,"credit_card_store_available":False,"jcb_security_code_available":False,"nfc_available":False,"coupon_available":False,"my_coupon_available":True,"price_format":{"positive_prefix":"","positive_suffix":" Credit","negative_prefix":"- ","negative_suffix":" Credit","formats":{"format":[{"value":"# ### ### ###,##","digit":"#"}],"pattern_id":"5"}},"default_timezone":"+00:00","eshop_available":True,"name":country,"iso_code":country,"default_language_code":"en","language_selectable":False}}
+   res = {"country_detail":{"region_code":"LOL","max_cash":{"amount":"99999,00 Credit","currency":"CREDIT","raw_value":"99999"},"loyalty_system_available":False,"legal_payment_message_required":False,"legal_business_message_required":False,"tax_excluded_country":True,"tax_free_country":True,"prepaid_card_available":True,"credit_card_available":False,"credit_card_store_available":False,"jcb_security_code_available":False,"nfc_available":False,"coupon_available":False,"my_coupon_available":True,"price_format":{"positive_prefix":"","positive_suffix":" Credit","negative_prefix":"- ","negative_suffix":" Credit","formats":{"format":[{"value":"# ### ### ###,##","digit":"#"}],"pattern_id":"5"}},"default_timezone":"+00:00","eshop_available":True,"name":country,"iso_code":country,"default_language_code":"en","language_selectable":False}}
    return JsonResponse(res)
 
 @csrf_exempt
 def open(request):
-   if request.headers.get("User-Agent") != None:
-      if request.headers.get("User-Agent").startswith("MINT"):
-         return JsonResponse({"error": {"code": "5465", "message": "This functionnality is not working yet.\nPlease open Nintendo eShop to use\nthe replacement service."}}, status=400)
    data = request.POST
    if data.get("device_id")==None:
       return JsonResponse({"error": True})
@@ -35,11 +33,19 @@ def open(request):
       return JsonResponse({"error": True})
    if ds.is_terminated:
       return JsonResponse({"error": {"code": "8008", "message": "Your account has been terminated. Sorry."}}, status=400)
-   request.session['deviceid'] = data.get("device_id")
+   s = SessionStore()
+   s['deviceid'] = data.get("device_id")
+   s.create()
    currenttime = int(round(time.time()*1000))
-   id = id_generator()
-   res = {"session_config":{"country":ds.country,"saved_lang":ds.language,"shop_account_initialized":False,"device_link_updated":False,"owned_titles_modified":currenttime,"shared_titles_last_modified":currenttime,"server_time":currenttime,"devices":{"device":[{"name":"CTR","id":4}]},"auto_billing_contracted":False,"id":id}}
-   return JsonResponse(res)
+   if request.headers.get("User-Agent") != None:
+      if request.headers.get("User-Agent").startswith("MINT") and request.get_full_path() == "/ninja/ws/my/session/!open?_type=json":
+         #LOTS of placeholder here coz i dont have access to nintendo servers
+         res = {"session_config":{"pid":ds.id,"account_id":"Somebody","mii":{"name":"Somebody","icon_url":"https://example.com/"},"country":"FR","saved_lang":"fr","shop_account_initialized":False,"device_link_updated":False,"owned_titles_modified":currenttime,"shared_titles_last_modified":currenttime,"age":25,"server_time":currenttime,"devices":{"device":[{"name":"CTR","initial_device_account_id":str(ds.id),"npns_ready":True,"id":4}]},"wishlist_last_modified":currenttime,"parental_controls":{"parental_control":[{"device":"CTR","type":"game_rating_age","value":0},{"device":"CTR","type":"game_rating_lock","value":0},{"device":"CTR","type":"shopping","value":0}]},"auto_billing_contracted":False,"id":s.session_key}}
+      else:
+         res = {"session_config":{"country":ds.country,"saved_lang":ds.language,"shop_account_initialized":False,"device_link_updated":False,"owned_titles_modified":currenttime,"shared_titles_last_modified":currenttime,"server_time":currenttime,"devices":{"device":[{"name":"CTR","id":4}]},"auto_billing_contracted":False,"id":s.session_key}}
+      res = JsonResponse(res)
+      res.set_cookie("JSESSIONID", s.session_key, httponly=True, path="/ninja")
+      return res
 
 @csrf_exempt
 def close(request):
@@ -51,7 +57,7 @@ def balance(request):
    try:
       ds = Client3DS.objects.get(consoleid=request.session["deviceid"])
    except:
-      return JsonResponse({"error": True})
+      return JsonResponse({"error": {"code": "3010","message": "The connection to the server has\ntimed out due to user inactivity.\n\nPlease restart Nintendo eShop\nand try again."}}, status=400)
    res = {"balance":{"amount":str(ds.balance)+",00 Credit","currency":"EUR","raw_value":str(ds.balance)}}
    return JsonResponse(res)
 
@@ -66,7 +72,7 @@ def wishlist(request):
    try:
       ds = Client3DS.objects.get(consoleid=request.session["deviceid"])
    except:
-      return JsonResponse({"error": True})
+      return JsonResponse({"error": {"code": "3010","message": "The connection to the server has\ntimed out due to user inactivity.\n\nPlease restart Nintendo eShop\nand try again."}}, status=400)
    wishlisted_titles = wishlistedTitle.objects.filter(owner=ds)
    wishlisted = []
    for title in wishlisted_titles:
@@ -85,7 +91,7 @@ def ownedtitles(request):
    try:
       ds = Client3DS.objects.get(consoleid=request.session["deviceid"])
    except:
-      return JsonResponse({"error": True})
+      return JsonResponse({"error": {"code": "3010","message": "The connection to the server has\ntimed out due to user inactivity.\n\nPlease restart Nintendo eShop\nand try again."}}, status=400)
    owned_titles = ownedTitle.objects.filter(owner=ds)
    owned = []
    i = 0
@@ -101,7 +107,7 @@ def language(request):
    try:
       ds = Client3DS.objects.get(consoleid=request.session["deviceid"])
    except:
-      return JsonResponse({"error": True})
+      return JsonResponse({"error": {"code": "3010","message": "The connection to the server has\ntimed out due to user inactivity.\n\nPlease restart Nintendo eShop\nand try again."}}, status=400)
    res = {"session_config":{"saved_lang":ds.language}}
    return JsonResponse(res)
 
@@ -116,7 +122,7 @@ def online_price(request, country):
    try:
       ds = Client3DS.objects.get(consoleid=request.session["deviceid"])
    except:
-      return JsonResponse({"error": True})
+      return JsonResponse({"error": {"code": "3010","message": "The connection to the server has\ntimed out due to user inactivity.\n\nPlease restart Nintendo eShop\nand try again."}}, status=400)
    tlist = list(request.GET.get('title[]').split(","))
    titles = []
    for ind_title in tlist:
@@ -155,7 +161,7 @@ def put_wishlist(request):
    try:
       ds = Client3DS.objects.get(consoleid=request.session["deviceid"])
    except:
-      return JsonResponse({"error": True})
+      return JsonResponse({"error": {"code": "3010","message": "The connection to the server has\ntimed out due to user inactivity.\n\nPlease restart Nintendo eShop\nand try again."}}, status=400)
    try:
       wishlisted = wishlistedTitle.objects.get(title=title, owner=ds)
       return JsonResponse({"error": True})
@@ -174,7 +180,7 @@ def delete_wishlist(request, tid):
    try:
       ds = Client3DS.objects.get(consoleid=request.session["deviceid"])
    except:
-      return JsonResponse({"error": True})
+      return JsonResponse({"error": {"code": "3010","message": "The connection to the server has\ntimed out due to user inactivity.\n\nPlease restart Nintendo eShop\nand try again."}}, status=400)
    try:
       wishlisted = wishlistedTitle.objects.get(title=title, owner=ds)
    except ObjectDoesNotExist:
@@ -208,7 +214,7 @@ def pretransac_redeem(request):
    try:
       ds = Client3DS.objects.get(consoleid=request.session["deviceid"])
    except:
-      return JsonResponse({"error": True})
+      return JsonResponse({"error": {"code": "3010","message": "The connection to the server has\ntimed out due to user inactivity.\n\nPlease restart Nintendo eShop\nand try again."}}, status=400)
    res = {"prereplenish_info": {"current_balance": {"amount": str(ds.balance)+" Credit", "currency": "CREDIT", "raw_value": str(ds.balance)},"replenish_amount": {"amount": str(request.GET.get("replenish_amount"))+" Credit", "currency": "CREDIT", "raw_value": str(request.GET.get("replenish_amount"))},"post_balance": {"amount": str(int(float(request.GET.get("replenish_amount")))+ds.balance)+" Credit", "currency": "CREDIT", "raw_value": str(int(float(request.GET.get("replenish_amount")))+ds.balance)}}}
    return JsonResponse(res)
 
@@ -217,7 +223,7 @@ def add_money_prepaid(request):
    try:
       ds = Client3DS.objects.get(consoleid=request.session["deviceid"])
    except:
-      return JsonResponse({"error": True})
+      return JsonResponse({"error": {"code": "3010","message": "The connection to the server has\ntimed out due to user inactivity.\n\nPlease restart Nintendo eShop\nand try again."}}, status=400)
    try:
       card = redeemableCard.objects.get(code=request.POST.get("card_number"))
    except:
@@ -241,7 +247,7 @@ def prepurchase_info(request, country, tid):
    try:
       ds = Client3DS.objects.get(consoleid=request.session["deviceid"])
    except:
-      return JsonResponse({"error": True})
+      return JsonResponse({"error": {"code": "3010","message": "The connection to the server has\ntimed out due to user inactivity.\n\nPlease restart Nintendo eShop\nand try again."}}, status=400)
    res = {"prepurchase_info":{"tax_excluded":False,"purchasing_content":[{"eshop_sales_status":"onsale","content_size":title.size,"payment_amount":{"price":{"regular_price":{"amount":str(title.price)+",00 Credit","currency":"CREDIT","raw_value":str(title.price),"id":2172116800}},"total_amount":{"amount":str(title.price)+",00 Credit","currency":"CREDIT","raw_value":str(title.price)}}}],"current_balance":{"amount":str(ds.balance)+",00 Credit","currency":"CREDIT","raw_value":str(ds.balance)},"post_balance":{"amount":str(ds.balance-title.price)+",00 Credit","currency":"EUR","raw_value":str(ds.balance-title.price)},"total_amount":{"price":{"regular_price":{"amount":str(title.price)+",00 Credit","currency":"CREDIT","raw_value":str(title.price)}},"total_amount":{"amount":str(title.price)+",00 Credit","currency":"CREDIT","raw_value":str(title.price)}}}}
    return JsonResponse(res)
 
@@ -254,7 +260,7 @@ def purcahse_title(request, country, tid):
    try:
       ds = Client3DS.objects.get(consoleid=request.session["deviceid"])
    except:
-      return JsonResponse({"error": True})
+      return JsonResponse({"error": {"code": "3010","message": "The connection to the server has\ntimed out due to user inactivity.\n\nPlease restart Nintendo eShop\nand try again."}}, status=400)
    if not title.public:
       return JsonResponse({"error": {"code": "6265", "message": "This title is not public.\nYou cannot download it."}}, status=400)
    if ds.balance - title.price < 0:
@@ -270,11 +276,33 @@ def purcahse_title(request, country, tid):
    return JsonResponse(res)
 
 @csrf_exempt
+def purcahse_ticket(request, country, tid):
+   try:
+      aitem = item.objects.get(id=int(request.POST.get("item_id[]")))
+   except:
+      return JsonResponse({"error": True})
+   try:
+      ds = Client3DS.objects.get(consoleid=request.session["deviceid"])
+   except:
+      return JsonResponse({"error": {"code": "3010","message": "The connection to the server has\ntimed out due to user inactivity.\n\nPlease restart Nintendo eShop\nand try again."}}, status=400)
+   if ds.balance - aitem.price < 0:
+      return JsonResponse({"error": {"code": "8167", "message": "You don't have enough money for that."}})
+   try:
+      owned = ownedTicket.objects.get(item=aitem, owner=ds)
+   except ObjectDoesNotExist:
+      ds.balance = ds.balance - aitem.price
+      ds.save()
+      owned = ownedTicket.objects.create(item=aitem, ticketid=(b'\x00\x04'+ os.urandom(6)).hex(), owner=ds)
+      owned.save()
+   res = {"transaction_results": {"transaction_result":[{"transaction_id":1,"title_id":aitem.title.tid,"ticket_id":int(owned.ticketid, base=16),"post_balance":{"amount":str(ds.balance)+",00 Credit","currency":"CREDIT","raw_value":str(ds.balance)},"integrated_account":True}]}}
+   return JsonResponse(res)
+
+@csrf_exempt
 def tax_location(request):
    try:
       ds = Client3DS.objects.get(consoleid=request.session["deviceid"])
    except:
-      return JsonResponse({"error": True})
+      return JsonResponse({"error": {"code": "3010","message": "The connection to the server has\ntimed out due to user inactivity.\n\nPlease restart Nintendo eShop\nand try again."}}, status=400)
    res = {"tax_location": {"state": "uwuland", "state_code": ds.country, "id": 71647}}
    return JsonResponse(res)
 
@@ -283,7 +311,7 @@ def redeem_title(request, country, tid):
    try:
       ds = Client3DS.objects.get(consoleid=request.session["deviceid"])
    except:
-      return JsonResponse({"error": True})
+      return JsonResponse({"error": {"code": "3010","message": "The connection to the server has\ntimed out due to user inactivity.\n\nPlease restart Nintendo eShop\nand try again."}}, status=400)
    try:
       title = Title.objects.get(id=int(tid))
    except:
@@ -307,7 +335,7 @@ def transactions(request):
    try:
       ds = Client3DS.objects.get(consoleid=request.session["deviceid"])
    except:
-      return JsonResponse({"error": True})
+      return JsonResponse({"error": {"code": "3010","message": "The connection to the server has\ntimed out due to user inactivity.\n\nPlease restart Nintendo eShop\nand try again."}}, status=400)
    return JsonResponse({"error": {"code": "8458", "message": "Hello!\nHere is your 3DS Key:\n"+ds.uniquekey}}, status=400)
 
 @csrf_exempt
@@ -315,7 +343,7 @@ def shared_titles(request):
    try:
       ds = Client3DS.objects.get(consoleid=request.session["deviceid"])
    except:
-      return JsonResponse({"error": True})
+      return JsonResponse({"error": {"code": "3010","message": "The connection to the server has\ntimed out due to user inactivity.\n\nPlease restart Nintendo eShop\nand try again."}}, status=400)
    ownedtitles = ownedTitle.objects.filter(owner=ds)
    wishlisted = []
    for title in ownedtitles:
@@ -349,3 +377,12 @@ def votable_titles(request):
 @csrf_exempt
 def votes(request):
     return JsonResponse({"error": {"code": "5626", "message": "WIP. Not ready yet."}}, status=400)
+
+@csrf_exempt
+def current_raw(request):
+   try:
+      ds = Client3DS.objects.get(consoleid=request.POST.get("device_id"))
+   except:
+      #If it does not work, placeholder. This is due to chunkencoding. Fuck it :(
+      return HttpResponse(str(0))
+   return HttpResponse(str(ds.balance))

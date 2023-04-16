@@ -79,7 +79,16 @@ class Title(models.Model):
     size = models.IntegerField(default=0)
     ticket_available = models.BooleanField(default=True)
     def __str__(self):
-        return self.name+" by "+self.publisher.publisher_name+" published on "+str(self.date)    
+        return self.name+" by "+self.publisher.publisher_name+" published on "+str(self.date)  
+
+class item(models.Model):
+    id = models.IntegerField(primary_key=True, blank=True)
+    title = models.ForeignKey(Title, null=False, on_delete=models.CASCADE)
+    itemcode = models.CharField(max_length=16)
+    price = models.IntegerField(default=0, null=False)
+    limit = models.IntegerField(default=1, null=False)
+    def __str__(self):
+        return "Item "+str(self.id)+" for "+self.title.name
 
 class movie(models.Model):
     id = models.IntegerField(primary_key=True, blank=True)
@@ -102,6 +111,13 @@ class ownedTitle(models.Model):
     owner = models.ForeignKey(Client3DS, null=False, on_delete=models.CASCADE)
     def __str__(self):
         return "Title "+self.title.name+" owned by "+self.owner.consoleid
+
+class ownedTicket(models.Model):
+    item = models.ForeignKey(item, null=False, on_delete=models.CASCADE)
+    ticketid = models.CharField(max_length=16, null=False)
+    owner = models.ForeignKey(Client3DS, null=False, on_delete=models.CASCADE)
+    def __str__(self):
+        return "Ticket "+self.item.itemcode+" owned by "+self.owner.consoleid
 
 class wishlistedTitle(models.Model):
     title = models.ForeignKey(Title, null=False, on_delete=models.CASCADE)
@@ -136,6 +152,6 @@ class redeemableCard(models.Model):
 class searchCategory(models.Model):
     id = models.IntegerField(primary_key=True, blank=True)
     name = models.CharField(max_length=35)
-    platform_list = models.TextField()
+    platform_list = models.TextField(verbose_name="Platform List (seperate each platform by a comma)")
     def __str__(self):
         return self.name

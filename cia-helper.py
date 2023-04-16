@@ -45,7 +45,7 @@ try:
                     except IndexError:
                         pass             
                     with open("tmd.bin", 'wb') as file:
-                        file.write(cia.open_raw_section(CIASection.TitleMetadata).read()
+                        file.write(cia.open_raw_section(CIASection.TitleMetadata).read())
                     print('Finished! You can now put the tmd.bin and the .app file in cdn/'+cia.tmd.title_id.upper()+' (create the folder)')
                     print('Have a great day!')
             except BootromNotFoundError:
