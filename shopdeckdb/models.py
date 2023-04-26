@@ -78,6 +78,7 @@ class Title(models.Model):
     is_not_downloadable = models.BooleanField(default=False)
     size = models.IntegerField(default=0)
     ticket_available = models.BooleanField(default=True)
+    demo = models.ForeignKey("Title", on_delete=models.DO_NOTHING, null=True, blank=True)
     def __str__(self):
         return self.name+" by "+self.publisher.publisher_name+" published on "+str(self.date)  
 

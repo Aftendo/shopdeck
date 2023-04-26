@@ -107,7 +107,11 @@ def directory(request, region, cid):
             is_downloadable = False
         else:
             is_downloadable = True
-        alltitles.append({"title": {"platform": {"name": title.platform.name, "id": title.platform.id, "device": "CTR", "category": title.genre.id}, "publisher": {"name": title.publisher.publisher_name, "id": title.publisher.id}, "display_genre": title.genre.name, "release_date_on_eshop": str(title.date), "retail_sales": False, "eshop_sales": is_downloadable, "demo_available": False, "aoc_available": False, "in_app_purchase": title.in_app_purchase, "release_date_on_original": str(title.date), "name": title.name, "id": title.id, "product_code": title.product_code, "icon_url": title.icon_url, "banner_url": title.banner_url, "new": title.new}, "index": i})
+        if title.demo != None:
+            demo = True
+        else:
+            demo = False
+        alltitles.append({"title": {"platform": {"name": title.platform.name, "id": title.platform.id, "device": "CTR", "category": title.genre.id}, "publisher": {"name": title.publisher.publisher_name, "id": title.publisher.id}, "display_genre": title.genre.name, "release_date_on_eshop": str(title.date), "retail_sales": False, "eshop_sales": is_downloadable, "demo_available": demo, "aoc_available": False, "in_app_purchase": title.in_app_purchase, "release_date_on_original": str(title.date), "name": title.name, "id": title.id, "product_code": title.product_code, "icon_url": title.icon_url, "banner_url": title.banner_url, "new": title.new}, "index": i})
         i = i + 1
     try:
         for Movie in movies:
@@ -135,7 +139,13 @@ def title(request, region, tid):
         is_downloadable = False
     else:
         is_downloadable = True
-    res = {"title": {"formal_name": title.name, "description": title.desc, "genres": {"genre": [{"name": title.genre.name, "id": title.genre.id}], "length": 1}, "keywords": {}, "ticket_available": title.ticket_available, "title_size": title.size, "download_code_sales": False, "download_card_sales": {"available": False}, "name": title.name, "thumbnails": {"thumbnail": [{"url": title.thumbnail_url, "height": 112, "width": 112, "type": "small"}]}, "id": title.id, "platform": {"name": title.platform.name, "id": title.platform.id, "device": "CTR", "category": title.genre.id }, "publisher": {"name": title.publisher.publisher_name, "id": title.publisher.id}, "product_code": title.product_code, "icon_url": title.icon_url, "banner_url": title.banner_url, "display_genre": title.genre.name, "release_date_on_eshop": str(title.date), "retail_sales": False, "eshop_sales": is_downloadable, "web_sales": is_downloadable, "demo_available": False, "aoc_available": False, "in_app_purchase": title.in_app_purchase, "new": title.new, "public": title.public}}
+    if title.demo != None:
+        demo = True
+    else:
+        demo = False
+    res = {"title": {"formal_name": title.name, "description": title.desc, "genres": {"genre": [{"name": title.genre.name, "id": title.genre.id}], "length": 1}, "keywords": {}, "ticket_available": title.ticket_available, "title_size": title.size, "download_code_sales": False, "download_card_sales": {"available": False}, "name": title.name, "thumbnails": {"thumbnail": [{"url": title.thumbnail_url, "height": 112, "width": 112, "type": "small"}]}, "id": title.id, "platform": {"name": title.platform.name, "id": title.platform.id, "device": "CTR", "category": title.genre.id }, "publisher": {"name": title.publisher.publisher_name, "id": title.publisher.id}, "product_code": title.product_code, "icon_url": title.icon_url, "banner_url": title.banner_url, "display_genre": title.genre.name, "release_date_on_eshop": str(title.date), "retail_sales": False, "eshop_sales": is_downloadable, "web_sales": is_downloadable, "demo_available": demo, "aoc_available": False, "in_app_purchase": title.in_app_purchase, "new": title.new, "public": title.public}}
+    if demo:
+        res["title"]["demo_titles"] = {"demo_title": [{"name": title.demo.name, "id": title.demo.id, "icon_url": title.demo.icon_url}]}
     return JsonResponse(res)
 
 @csrf_exempt
@@ -184,7 +194,11 @@ def contents(request, region):
             is_downloadable = False
         else:
             is_downloadable = True
-        titles.append({"title": {"platform": {"name": title.platform.name, "id": title.platform.id, "device": "CTR", "category": title.genre.id}, "publisher": {"name": title.publisher.publisher_name, "id": title.publisher.id}, "display_genre": title.genre.name, "release_date_on_eshop": str(title.date), "retail_sales": False, "eshop_sales": is_downloadable, "demo_available": False, "aoc_available": False, "in_app_purchase": title.in_app_purchase, "release_date_on_original": str(title.date), "name": title.name, "id": title.id, "product_code": title.product_code, "icon_url": title.icon_url, "banner_url": title.banner_url, "new": title.new}, "index": i})
+        if title.demo != None:
+            demo = True
+        else:
+            demo = False
+        titles.append({"title": {"platform": {"name": title.platform.name, "id": title.platform.id, "device": "CTR", "category": title.genre.id}, "publisher": {"name": title.publisher.publisher_name, "id": title.publisher.id}, "display_genre": title.genre.name, "release_date_on_eshop": str(title.date), "retail_sales": False, "eshop_sales": is_downloadable, "demo_available": demo, "aoc_available": False, "in_app_purchase": title.in_app_purchase, "release_date_on_original": str(title.date), "name": title.name, "id": title.id, "product_code": title.product_code, "icon_url": title.icon_url, "banner_url": title.banner_url, "new": title.new}, "index": i})
         i = i + 1
     for Movie in movies:
         if i > 25:
@@ -274,7 +288,11 @@ def titles(request, region):
             is_downloadable = False
         else:
             is_downloadable = True
-        titles.append({"title": {"platform": {"name": title.platform.name, "id": title.platform.id, "device": "CTR", "category": title.genre.id}, "publisher": {"name": title.publisher.publisher_name, "id": title.publisher.id}, "display_genre": title.genre.name, "release_date_on_eshop": str(title.date), "retail_sales": False, "eshop_sales": is_downloadable, "demo_available": False, "aoc_available": False, "in_app_purchase": title.in_app_purchase, "release_date_on_original": str(title.date), "name": title.name, "id": title.id, "product_code": title.product_code, "icon_url": title.icon_url, "banner_url": title.banner_url, "new": title.new}, "index": i})
+        if title.demo != None:
+            demo = True
+        else:
+            demo = False
+        titles.append({"title": {"platform": {"name": title.platform.name, "id": title.platform.id, "device": "CTR", "category": title.genre.id}, "publisher": {"name": title.publisher.publisher_name, "id": title.publisher.id}, "display_genre": title.genre.name, "release_date_on_eshop": str(title.date), "retail_sales": False, "eshop_sales": is_downloadable, "demo_available": demo, "aoc_available": False, "in_app_purchase": title.in_app_purchase, "release_date_on_original": str(title.date), "name": title.name, "id": title.id, "product_code": title.product_code, "icon_url": title.icon_url, "banner_url": title.banner_url, "new": title.new}, "index": i})
         i = i + 1
     try:
         for Movie in movies:

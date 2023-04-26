@@ -27,6 +27,7 @@ urlpatterns = [
     path('<str:country>/title/<int:tid>/tickets/!purchase_ctr', views.purcahse_ticket, name="purchasetik"),
     path('<str:country>/title/<int:tid>/!redeem', views.redeem_title, name="redeemtitle"),
     path('<str:country>/title/public_status', views.public_status, name="publicstatus"),
+    path('<str:country>/demo/<int:tid>/!purchase', views.purcahse_title, name="purchase"),
     path('redeemable_card/!check', views.check_redeemable, name="checkredeem"),
     path('my/balance/prereplenish_info', views.pretransac_redeem, name="testredeem"),
     path('my/balance/current/!add_prepaid', views.add_money_prepaid, name="prepaid"),
