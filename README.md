@@ -1,4 +1,4 @@
-**Since the main Let's Shop server has been shutdown, this repository is now read-only. Feel free to fork it and do your own Let's Shop server.**
+**This is being worked on again.**
 # shopdeck
 ![contributors](https://img.shields.io/github/contributors/LetsShop3DS/shopdeck) ![followers](https://img.shields.io/github/followers/LetsShop3DS) ![stars](https://img.shields.io/github/stars/LetsShop3DS/shopdeck)
 
