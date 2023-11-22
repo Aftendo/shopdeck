@@ -1,7 +1,7 @@
 django==4.1.10
 pyctr==0.6.0
 Flask==2.3.2
-Werkzeug==2.2.3
+Werkzeug==2.3.8
 django-extensions==3.2.1
 pyOpenSSL==23.0.0
 django-admin-interface==0.24.2
