@@ -371,11 +371,105 @@ def public_status(request, country):
 
 @csrf_exempt
 def votable_titles(request):
-    return JsonResponse({"error": {"code": "5626", "message": "WIP. Not ready yet."}}, status=400)
+    try:
+        ds = Client3DS.objects.get(consoleid=request.session["deviceid"])
+    except Client3DS.DoesNotExist:
+        return JsonResponse({"error": {"code": "3010","message": "The connection to the server has\ntimed out due to user inactivity.\n\nPlease restart Nintendo eShop\nand try again."}}, status=400)
 
+    owned_titles = ownedTitle.objects.filter(owner=ds)
+
+    transactions = []
+    index = 1 
+    for owned_title in owned_titles:
+        transactions.append({
+            "title": {
+                "platform": {
+                    "name": owned_title.title.platform.name,
+                    "id": owned_title.title.platform.id,
+                    "device": "CTR",
+                    "category": 8
+                },
+                "publisher": {
+                    "name": owned_title.title.publisher.publisher_name,
+                    "id": 1
+                },
+                "rating_info": {
+                    "rating_system": {
+                        "name": owned_title.title.parentalControl.parental_system_name,
+                        "id": owned_title.title.parentalControl.parental_system_id
+                    },
+                    "rating": {
+                        "icons": {
+                            "icon": [
+                                {"url": owned_title.title.parentalControl.icon_url_normal, "type": "normal"},
+                                {"url": owned_title.title.parentalControl.icon_url_small, "type": "small"}
+                            ]
+                        },
+                        "name": owned_title.title.parentalControl.age_name,
+                        "age": owned_title.title.parentalControl.age_number,
+                        "id": owned_title.title.parentalControl.id
+                    }
+                },
+                "release_date_on_eshop": str(owned_title.title.date),
+                "release_date_on_retail": str(owned_title.title.date),
+                "retail_sales": False,
+                "eshop_sales": owned_title.title.is_not_downloadable,
+                "in_app_purchase": owned_title.title.in_app_purchase,
+                "name": "• "+owned_title.title.region.initial+" • "+"\n"+owned_title.title.name,
+                "id": owned_title.title.id,
+                "icon_url": owned_title.title.icon_url,
+                "banner_url": owned_title.title.banner_url
+            },
+            "index": index
+        })
+        index += 1  
+
+    res = {
+        "contents": {
+            "content": transactions,
+            "length": len(transactions),
+            "offset": 0,
+            "total": len(transactions)
+        }
+    }
+
+    return JsonResponse(res)
+    
+#This Prob Need To Be Checked
 @csrf_exempt
-def votes(request):
-    return JsonResponse({"error": {"code": "5626", "message": "WIP. Not ready yet."}}, status=400)
+def vote(request):
+    if request.method == 'POST':
+        try:
+            required_params = ['id', 'age', 'gender', 'q3', 'q4', 'q5']
+            for param in required_params:
+                if param not in request.POST:
+                    return JsonResponse({"error": {"code": "400", "message": f"Missing required parameter: {param}"}}, status=400)
+
+            ds = Client3DS.objects.get(consoleid=request.session.get("deviceid"))
+        except Client3DS.DoesNotExist:
+            return JsonResponse({"error": {"code": "3010", "message": "The connection to the server has timed out due to user inactivity. Please restart Nintendo eShop and try again."}}, status=400)
+        
+        try:
+            q4 = request.POST['q4'].lower() == 'true'
+            q5 = request.POST['q5'].lower() == 'true'
+
+            voted_title = get_object_or_404(Title, id=request.POST['id'])
+
+            vote = Vote.objects.create(
+                client=ds,
+                voted_title=voted_title,
+                age=request.POST['age'],
+                gender=request.POST['gender'],
+                q3=request.POST['q3'],
+                q4=q4,
+                q5=q5
+            )
+        except Exception as e:
+            return JsonResponse({"error": {"code": "500", "message": "Internal Server Error", "details": str(e)}}, status=500)
+
+        return JsonResponse({}, status=200)
+    else:
+        return JsonResponse({"error": {"code": "405", "message": "Method Not Allowed"}}, status=405)
 
 @csrf_exempt
 def current_raw(request):
