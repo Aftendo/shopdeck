@@ -12,9 +12,9 @@ webcdn_directory = 'webcdn'
 
 print("CDN (for images, etc.) Services Starting Up")
 
-ccs = Blueprint("web", __name__)
+cdn = Blueprint("web", __name__)
 
-@ccs.route('/webcdn/<path:filename>')
+@cdn.route('/webcdn/<path:filename>')
 def serve_file(filename):
     file_path = os.path.join(webcdn_directory, filename)
     return send_from_directory(webcdn_directory, filename) if os.path.isfile(file_path) else ("File not found", 404)
