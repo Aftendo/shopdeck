@@ -10,7 +10,7 @@ from django.core.exceptions import ObjectDoesNotExist
 
 webcdn_directory = 'webcdn'
 
-print("CDN (for images, etc.) Services Starting Up")
+print("Local CDN Starting Up")
 
 cdn = Blueprint("web", __name__)
 
