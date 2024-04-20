@@ -328,14 +328,52 @@ def redeem_title(request, country, tid):
    owned.save()
    res = {"transaction_result":{"transaction_id":1,"title_id":title.tid,"ticket_id":int(tikid, base=16),"post_balance":{"amount":str(ds.balance)+",00 Credit","currency":"CREDIT","raw_value":str(ds.balance)},"business_type":"NCL_DIST","integrated_account":True}}
    return JsonResponse(res)
-   
+
+
+#Todo make the date not be a static value
 @csrf_exempt
 def transactions(request):
-   try:
-      ds = Client3DS.objects.get(consoleid=request.session["deviceid"])
-   except:
-      return JsonResponse({"error": {"code": "3010","message": "The connection to the server has\ntimed out due to user inactivity.\n\nPlease restart Nintendo eShop\nand try again."}}, status=400)
-   return JsonResponse({"error": {"code": "8458", "message": "Hello!\nHere is your 3DS Key:\n"+ds.uniquekey}}, status=400)
+    try:
+        ds = Client3DS.objects.get(consoleid=request.session["deviceid"])
+    except:
+        return JsonResponse({"error": {"code": "3010","message": "The connection to the server has\ntimed out due to user inactivity.\n\nPlease restart Nintendo eShop\nand try again."}}, status=400)
+
+    ownedtitles = ownedTitle.objects.filter(owner=ds)
+
+    transactions = []
+    index = 1 
+    for transaction in ownedtitles:
+        transactions.append({
+            "date": "14.04.2024",
+            "type": "Title Download",
+            "description": transaction.title.name,
+            "transaction_amount": {
+                "amount": "0,00",
+                "currency": "EUR",
+                "raw_value": "0"
+            },
+            "balance": {
+                "amount": "0,00",
+                "currency": "EUR",
+                "raw_value": "0"
+            },
+            "title": {},
+            "receipt": False,
+            "index": index, 
+            "id": transaction.title.id
+        })
+        index += 1  
+
+    res = {
+        "transactions": {
+            "transaction": transactions,
+            "length": len(transactions),
+            "offset": 0,
+            "total": len(transactions)
+        }
+    }
+
+    return JsonResponse(res)
 
 @csrf_exempt
 def shared_titles(request):
