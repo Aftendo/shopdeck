@@ -156,3 +156,12 @@ class searchCategory(models.Model):
     platform_list = models.TextField(verbose_name="Platform List (seperate each platform by a comma)")
     def __str__(self):
         return self.name
+
+class Vote(models.Model):
+    client = models.ForeignKey(Client3DS, on_delete=models.CASCADE)
+    voted_title = models.ForeignKey(Title, on_delete=models.CASCADE, null=True)
+    age = models.IntegerField()
+    gender = models.CharField(max_length=10)
+    q3 = models.CharField(max_length=10)
+    q4 = models.BooleanField()
+    q5 = models.BooleanField()

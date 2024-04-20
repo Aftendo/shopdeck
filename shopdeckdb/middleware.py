@@ -11,7 +11,7 @@ class ShopMiddleware(object):
 	def __call__(self, request):
 		if settings.IN_MAINTENANCE:
 			if request.path.startswith("/ninja/ws") or request.path.startswith("/samurai/ws"):
-				return JsonResponse({"error": {"code": "6516", "message": "Maintenance is in progress.\nPlease come back later."}}, status=400)
+				return JsonResponse({"error": {"code": "6516", "message": settings.MAINTENANCE_MSG}}, status=400)
 			else:
 				return HttpResponse("Maintenance is in progress. Please come back later.", status=503)
 		if not request.path.startswith("/admin") and request.user.is_authenticated and request.user.linked_ds == None:

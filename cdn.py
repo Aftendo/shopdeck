@@ -7,7 +7,9 @@ from shopdeckdb.models import *
 from django.core.exceptions import ObjectDoesNotExist
 import os.path
 
-print("CDN Services Starting Up")
+print("Title CDN Services Starting Up")
+
+#Implementing a system for games update soon
 
 ccs = Blueprint("ccs", "ccs")
 @ccs.route("/ccs/download/<tid>/tmd.<version>", methods=['GET'])

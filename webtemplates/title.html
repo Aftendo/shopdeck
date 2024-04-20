@@ -1,33 +1,135 @@
 {% extends '_layout.html' %}
 {% block main %}
-<h1>{{app.name}}</h1>
-<br>
-<div class="d-flex">
-<img src="{{app.thumbnail_url}}" alt="thumb">
-<div class="ms-2">
-    {% if wishlisted %}
-    <a class="btn btn-danger" href="/wishlist/remove?id={{app.id}}&redirect=/title/{{app.id}}"><li class="fa-solid fa-remove"></li>Remove from wishlist</a>
-    {% else %}
-    <a class="btn btn-warning" href="/wishlist/add?id={{app.id}}"><li class="fa-solid fa-add"></li>Add to wishlist</a>
-    {% endif %}
-    <h2>Price: {{ app.price }} Credit</h2>
-    <h4><i>{% if app.is_not_available %}Not available{% else %}Available now{% endif %}</i></h4>
-</div>
-</div>
-<br>
-<br>
-<h2>Description</h2>
-{% autoescape off %}
-<p>{{ app.desc }}</p>
-{% endautoescape %}
-<h3>Details</h3>
-<div class="detail-box">
-    <p>Publisher: {{app.publisher.publisher_name}}</p>
-    <p class="ms-5">Genre: {{app.genre.name}}</p>
-</div>
-<br>
-<div class="detail-box">
-    <p>Platform: {{app.platform.name}}</p>
-    <p class="ms-5">Release date: {{app.date}}</p>
-</div>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ app.name }}</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/fancybox/3.5.7/jquery.fancybox.min.css">
+    <style>
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+            }
+            to {
+                opacity: 1;
+            }
+        }
+        .fade-in {
+            animation: fadeIn 0.5s ease-in-out;
+        }
+
+        @media only screen and (max-width: 768px) {
+            .d-flex {
+                flex-direction: column;
+            }
+            .ms-2 {
+                margin-top: 10px;
+            }
+            img {
+                max-width: 100%;
+                height: auto;
+            }
+        }
+
+        .card {
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #343a40; 
+            color: #fff; 
+            border-radius: 10px;
+            box-shadow: 0 0 20px rgba(255, 255, 255, 0.1); 
+        }
+
+        .card img {
+            max-width: 100%;
+            height: auto;
+            border-radius: 5px;
+            margin-bottom: 10px;
+        }
+
+        .btn {
+            padding: 10px 20px;
+            margin-right: 10px;
+            border-radius: 5px;
+            text-decoration: none;
+            font-weight: bold;
+            transition: background-color 0.3s ease;
+        }
+
+        .btn-danger {
+            background-color: #dc3545; 
+            color: #fff;
+        }
+
+        .btn-danger:hover {
+            background-color: #bb2d3b; 
+        }
+
+        .btn-warning {
+            background-color: #ffc107; 
+            color: #000;
+        }
+
+        .btn-warning:hover {
+            background-color: #e0a800;
+        }
+
+        h1 {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        h2, h3 {
+            margin-top: 20px;
+        }
+
+        p {
+            margin-bottom: 10px;
+        }
+    </style>
+</head>
+<body>
+    <div class="fade-in card">
+        <h1>{{ app.name }}</h1>
+        <div class="d-flex">
+            <img src="{{ app.banner_url }}" alt="banner">
+            <div class="ms-2">
+                {% if wishlisted %}
+                <a class="btn btn-danger" href="/wishlist/remove?id={{ app.id }}&redirect=/title/{{ app.id }}">Remove from wishlist</a>
+                {% else %}
+                <a class="btn btn-warning" href="/wishlist/add?id={{ app.id }}">Add to wishlist</a>
+                {% endif %}
+                <h2>Price: {{ app.price }} Credit</h2>
+                <h4><i>{% if app.is_not_available %}Not available{% else %}Available now{% endif %}</i></h4>
+            </div>
+        </div>
+        <h2>Description</h2>
+        <p>{{ app.desc }}</p>
+        <h3>Details</h3>
+        <p>Publisher: {{ app.publisher.publisher_name }}</p>
+        <p>Genre: {{ app.genre.name }}</p>
+        <p>Platform: {{ app.platform.name }}</p>
+        <p>Release date: {{ app.date }}</p>
+        <p>Title ID: {{ app.tid }}</p>
+        <h3>Screenshots</h3>
+        <div>
+            {% for screenshot in screenshots %}
+            <a href="{{ screenshot }}" data-fancybox="gallery">
+                <img src="{{ screenshot }}" alt="Screenshot">
+            </a>
+            {% endfor %}
+        </div>
+    </div>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/fancybox/3.5.7/jquery.fancybox.min.js"></script>
+    <script>
+        $(document).ready(function() {
+            $(".lazyload").lazyload();
+        });
+    </script>
+</body>
+</html>
 {% endblock %}
