@@ -14,7 +14,7 @@ from decimal import Decimal
 import json
 from io import BytesIO
 
-print("Metadata Starting Up")
+print("Metadata (Samurai) Starting Up")
 
 @csrf_exempt
 def news(request, region):
