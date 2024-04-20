@@ -6,7 +6,7 @@ print("Shopdeck Server - SOAP XML Services\n\nBy Let's Shop Team 2024")
 print("----------------------------------")
 
 from flask import Flask
-import ecs, ias, cas, cdn, webcdn
+import ecs, ias, cas, cdn, assetcdn
 
 app = Flask(__name__)
 app.register_blueprint(ecs.ecs)
