@@ -3,8 +3,16 @@ from django.views.decorators.csrf import csrf_exempt
 from shopdeck import settings
 from shopdeckdb.models import *
 from django.core.exceptions import ObjectDoesNotExist
+from django.core.serializers.json import DjangoJSONEncoder
 from urllib.parse import unquote
 import datetime
+from django.db.models import Count, Avg, F
+from django.contrib.postgres.fields import JSONField
+from PIL import Image
+import requests
+from decimal import Decimal
+import json
+from io import BytesIO
 
 print("Metadata Starting Up")
 
