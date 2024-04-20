@@ -24,3 +24,9 @@ Shopdeck operates strictly within legal boundaries. We adhere to stringent polic
 
 For comprehensive setup instructions, please refer to the [Wiki/Development Setup](https://github.com/LetsShop3DS/shopdeck/wiki/Development-Setup) section of this repository.
 
+## Credits
+
+Thanks to:
+- ZeroSkill for giving us precious JSON responses from the official Nintendo eShop servers, as well as some documentation and help on getting tickets working
+- DoggoITA for being the first contributor to shopdeck & making some good enhancements! (Rankings, new webUI, and votes)
+
