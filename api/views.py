@@ -6,7 +6,7 @@ from django.core.exceptions import ObjectDoesNotExist
 import time, random, string, os
 from django.contrib.sessions.backends.db import SessionStore
 
-print("API Starting Up")
+print("API (Ninja) Starting Up")
 
 def id_generator(size=32, chars=string.ascii_uppercase + string.digits):
     return ''.join(random.choice(chars) for _ in range(size))
