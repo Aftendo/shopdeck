@@ -472,6 +472,13 @@ def vote(request):
         return JsonResponse({"error": {"code": "405", "message": "Method Not Allowed"}}, status=405)
 
 @csrf_exempt
+def votes(request):
+   try:
+      ds = Client3DS.objects.get(consoleid=request.POST.get("device_id"))
+   except:
+return JsonResponse({"error": {"code": "3010", "message": "W.i.P"}}, status=400)
+
+@csrf_exempt
 def current_raw(request):
    try:
       ds = Client3DS.objects.get(consoleid=request.POST.get("device_id"))
