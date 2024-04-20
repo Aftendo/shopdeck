@@ -34,7 +34,7 @@ urlpatterns = [
     path('my/balance/current_raw', views.current_raw, name="current_raw"),
     path('my/tax_location', views.tax_location, name="taxloc"),
     path('my/transactions', views.transactions, name="transactions"),
-    path('my/votes', views.votes, name="votes"),
+    path('my/votes', views.vote, name="votes"),
     path('my/votable_titles/!put', views.votable_titles, name="votable_titles"),
     path('titles/id_pair', views.id_pair, name="id_pair"),
 ]
