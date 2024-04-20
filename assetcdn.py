@@ -8,13 +8,13 @@ application = get_wsgi_application()
 from shopdeckdb.models import *
 from django.core.exceptions import ObjectDoesNotExist
 
-webcdn_directory = 'webcdn'
+assetcdn_directory = 'assetcdn'
 
 print("Local CDN Starting Up")
 
 cdn = Blueprint("web", __name__)
 
-@cdn.route('/webcdn/<path:filename>')
+@cdn.route('/assets/<path:filename>')
 def serve_file(filename):
-    file_path = os.path.join(webcdn_directory, filename)
-    return send_from_directory(webcdn_directory, filename) if os.path.isfile(file_path) else ("File not found", 404)
+    file_path = os.path.join(assetcdn_directory, filename)
+    return send_from_directory(assetcdn_directory, filename) if os.path.isfile(file_path) else ("File not found", 404)
