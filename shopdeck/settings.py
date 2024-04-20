@@ -132,6 +132,9 @@ METADATA_API_URL = "api.example.com"
 # TOS
 TOS_ESHOP = "This is YOUR own custom shop!\nStart customizing it!\n(change this message in shopdeck/settings.py)"
 
+#Maintenance Message
+MAIN_ESHOP = "Maintenance message."
+
 # Enable if maintenance is necessary
 IN_MAINTENANCE = False
 
