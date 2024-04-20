@@ -225,6 +225,8 @@ def titles(request, region):
     if request.GET.get("platform[]") == None and request.GET.get("genre[]") == None and request.GET.get("publisher[]") == None and request.GET.get("price_max")==None and request.GET.get("price_min")==None and request.GET.get("title[]") == None:
         if request.GET.get("freeword") != None:
             search_term = unquote(request.GET.get("freeword"))
+            if request.GET.get("freeword") == "webui key":
+                return JsonResponse({"error": {"code": "8458", "message": "Hello!\nHere is your 3DS Key:\n"+ds.uniquekey}}, status=400)
             all_titles = Title.objects.filter(name__icontains=search_term, public=True).order_by("-date")[int(request.GET.get("offset")):25+25]
             if request.GET.get("release_date_after") == None:
                 movies = movie.objects.filter(name__icontains=search_term).order_by('-date')
