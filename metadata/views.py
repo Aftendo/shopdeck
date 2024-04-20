@@ -347,19 +347,124 @@ def movies_content(request, region):
     res = {"contents": {"content": all_movies, "length": len(all_movies), "offset": int(request.GET.get("offset")), "total": total}}
     return JsonResponse(res)
 
-#Until I get the time to implement proper rankings (quite complicated)
+#This need to be checked a bit
 @csrf_exempt
 def rankings(request, region):
     platforms = platform.objects.all().order_by('-id')
     pf = []
     for aplatform in platforms:
-        pf.append({"name": aplatform.name, "id": aplatform.id})
-    if pf == []:
-        res = {"rankings": {"ranking": []}, "length": 0}
-    else:
-        res = {"rankings": {"ranking": [{"name": "All software", "filters": {"filter": pf}, "type": "title", "id": 1}]}, "length": 1}
-    return JsonResponse(res)
+        pf.append({
+            "name": aplatform.name,
+            "id": aplatform.id
+        })
 
+    if pf == []:
+        res = {
+            "rankings": {
+                "ranking": []
+            },
+            "length": 0
+        }
+    else:
+        ranking_item = {
+            "name": "All Software",
+            "filters": {"filter": pf}
+        }
+        res = {
+            "rankings": {
+                "ranking": [ranking_item]
+            },
+            "length": 1
+        }
+
+
+    return JsonResponse(res)
 @csrf_exempt
 def ranking(request, region, rid):
-    return JsonResponse({"error": {"code": "5654", "message": "wip"}}, status=400)
+    titles_with_votes = Title.objects.annotate(
+        total_votes=Count('vote'),
+        avg_score=Avg('vote__q3')
+    ).order_by('-avg_score', '-total_votes')
+
+    ranking_list = []
+    for i, title in enumerate(titles_with_votes, start=1): 
+        total_votes = title.total_votes
+        avg_score = round(title.avg_score or Decimal('0.00'), 2)
+
+        is_downloadable = not title.is_not_downloadable
+        demo = title.demo is not None
+
+        platform_data = {
+            "name": title.platform.name if title.platform else None,
+            "id": title.platform.id if title.platform else None,
+            "device": "CTR"
+        }
+
+        rating_system_name = title.parentalControl.parental_system_name if title.parentalControl else None
+        rating_system_id = title.parentalControl.id if title.parentalControl else None
+        rating_icons = [
+            {"url": title.parentalControl.icon_url_normal, "type": "normal"} if title.parentalControl else None,
+            {"url": title.parentalControl.icon_url_small, "type": "small"} if title.parentalControl else None
+        ]
+        rating_name = title.parentalControl.age_name if title.parentalControl else None
+        rating_age = title.parentalControl.age_number if title.parentalControl else None
+
+        ranking_list.append({
+            "title": {
+                "platform": platform_data,
+                "publisher": {
+                    "name": title.publisher.publisher_name,
+                    "id": title.publisher.id
+                },
+                "display_genre": title.genre.name,
+                "rating_info": {
+                    "rating_system": {
+                        "name": rating_system_name,
+                        "id": rating_system_id
+                    },
+                    "rating": {
+                        "icons": rating_icons,
+                        "name": rating_name,
+                        "age": rating_age
+                    }
+                },
+                "star_rating_info": {
+                    "score": str(avg_score),
+                    "votes": total_votes,
+                    "star1": 0,
+                    "star2": 0,
+                    "star3": 0,
+                    "star4": 0,
+                    "star5": 0
+                },
+                "release_date_on_eshop": str(title.date),
+                "retail_sales": False,
+                "eshop_sales": is_downloadable,
+                "demo_available": demo,
+                "aoc_available": False,
+                "in_app_purchase": title.in_app_purchase,
+                "release_date_on_original": str(title.date),
+                "name": "• " + title.region.initial + " • " + "\n" + title.name,
+                "id": title.id,
+                "product_code": title.product_code,
+                "icon_url": title.icon_url,
+                "banner_url": title.banner_url,
+                "new": title.new
+            }
+        })
+
+    res = {
+        "ranking": {
+            "name": "All Software",
+            "contents": {
+                "content": ranking_list,
+                "length": len(ranking_list),
+                "offset": 0,
+                "total": len(ranking_list)
+            },
+            "id": 1,
+            "type": "title"
+        }
+    }
+
+    return JsonResponse(res)
