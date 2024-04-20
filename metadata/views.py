@@ -141,17 +141,83 @@ def title(request, region, tid):
     try:
         title = Title.objects.get(id=tid, public=True)
     except ObjectDoesNotExist:
-        return JsonResponse({"error": {"code": "5668", "message": "Title does not exists."}})
+        return JsonResponse({"error": {"code": "5668", "message": "This Title doesn't exist."}})
+    
     title.desc = title.desc.replace("\n", "\n<br>")
-    if title.is_not_downloadable:
-        is_downloadable = False
-    else:
-        is_downloadable = True
-    if title.demo != None:
-        demo = True
-    else:
-        demo = False
-    res = {"title": {"formal_name": title.name, "description": title.desc, "genres": {"genre": [{"name": title.genre.name, "id": title.genre.id}], "length": 1}, "keywords": {}, "ticket_available": title.ticket_available, "title_size": title.size, "download_code_sales": False, "download_card_sales": {"available": False}, "name": title.name, "thumbnails": {"thumbnail": [{"url": title.thumbnail_url, "height": 112, "width": 112, "type": "small"}]}, "id": title.id, "platform": {"name": title.platform.name, "id": title.platform.id, "device": "CTR", "category": title.genre.id }, "publisher": {"name": title.publisher.publisher_name, "id": title.publisher.id}, "product_code": title.product_code, "icon_url": title.icon_url, "banner_url": title.banner_url, "display_genre": title.genre.name, "release_date_on_eshop": str(title.date), "retail_sales": False, "eshop_sales": is_downloadable, "web_sales": is_downloadable, "demo_available": demo, "aoc_available": False, "in_app_purchase": title.in_app_purchase, "new": title.new, "public": title.public}}
+    is_downloadable = not title.is_not_downloadable
+    demo = title.demo is not None
+    
+    thumbnails = [{"url": url, "height": 112, "width": 112, "type": "small"} for url in title.thumbnail_url.split(r" \ ")]
+    
+    upper_urls = title.screenshot_upper_url.split(" \ ")
+    lower_urls = title.screenshot_lower_url.split(" \ ")
+    screenshots = [{"image_url": [{"value": upper_urls[i].strip(), "type": "upper"}, {"value": lower_urls[i].strip(), "type": "lower"}]} for i in range(len(upper_urls))]
+    
+    genres_data = [{"name": genre.name, "id": genre.id} for genre in title.genre.all()]
+    languages_data = [{"iso_code": language.iso_code, "name": language.name} for language in title.language.all()]
+    features_data = [{"id": feature.id, "name": feature.name} for feature in title.feature.all()]
+    
+    platform_data = {"name": title.platform.name, "id": title.platform.id, "device": "CTR"} if title.platform else None
+    
+    res = {
+        "title": {
+            "formal_name": title.name,
+            "description": title.desc + "\n\n\nMore Information:\nTitle ID: {}\nProduct Code: {}\nVersion: {}\nID: {}".format(
+                title.tid, title.product_code, title.version, title.id),
+            "disclaimer": title.disclaimer,
+            "genres": {"genre": genres_data, "length": len(genres_data)},
+            "languages": {"language": languages_data, "length": len(languages_data)},
+            "number_of_players": title.number_of_players,
+            "web_sites": {"web_site": [{"name": title.website.website_name, "url": title.website.url, "official": title.website.official}], "length": 1},
+            "copyright": {"text": title.copyright},
+            "keywords": {"keyword": title.keyword.name},
+            "features": {"feature": features_data, "length": len(features_data)},
+            "ticket_available": title.ticket_available,
+            "title_size": title.size,
+            "download_code_sales": False,
+            "download_card_sales": {"available": False},
+            "name": title.name,
+            "thumbnails": {"thumbnail": thumbnails},
+            "id": title.id,
+            "platform": platform_data,
+            "publisher": {"name": title.publisher.publisher_name, "id": title.publisher.id},
+            "product_code": title.product_code,
+            "icon_url": title.icon_url,
+            "banner_url": title.banner_url,
+            "display_genre": title.genre.name,
+            "preference": {"target_player": {"everyone": title.target_player_everyone, "gamers": title.target_player_gamers}, "play_style": {"casual": title.play_style_casual, "intense": title.play_style_intense}},
+            "rating_info": {
+                "rating_system": {"name": title.age.parental_system_name, "id": title.age.parental_system_id},
+                "rating": {
+                    "icons": {"icon": [{"url": title.age.icon_url_normal, "type": "normal"}, {"url": title.age.icon_url_small, "type": "small"}]},
+                    "name": title.age.age_name,
+                    "age": title.age.age_number,
+                    "id": title.age.id
+                },
+                "descriptor": {"descriptor": [{"name": title.descriptor.name}], "length": 1}
+            },
+            "star_rating_info": {
+                "score": "0.00",
+                "votes": 0,
+                "star1": 0,
+                "star2": 0,
+                "star3": 0,
+                "star4": 0,
+                "star5": 0
+            },
+            "release_date_on_eshop": str(title.date),
+            "retail_sales": False,
+            "eshop_sales": is_downloadable,
+            "web_sales": is_downloadable,
+            "demo_available": demo,
+            "aoc_available": False,
+            "in_app_purchase": title.in_app_purchase,
+            "top_image": {"type": "screenshot", "url": title.top_image_url},
+            "new": title.new,
+            "public": title.public,
+            "screenshots": {"screenshot": screenshots}
+        }
+    }
     if demo:
         res["title"]["demo_titles"] = {"demo_title": [{"name": title.demo.name, "id": title.demo.id, "icon_url": title.demo.icon_url}]}
     return JsonResponse(res)
