@@ -1,17 +1,12 @@
 # Shopdeck: Your Nintendo 3DS eShop Replacement
 
-Note That This Is Still In W.i.P ⚠️
+Note that this is still WIP ⚠️
 
 [![contributors](https://img.shields.io/github/contributors/LetsShop3DS/shopdeck)](https://github.com/LetsShop3DS/shopdeck/graphs/contributors) [![followers](https://img.shields.io/github/followers/LetsShop3DS)](https://github.com/LetsShop3DS) [![stars](https://img.shields.io/github/stars/LetsShop3DS/shopdeck)](https://github.com/LetsShop3DS/shopdeck)
 
 ## Overview
 
 Welcome to Shopdeck, the official replacement server for the Nintendo 3DS eShop. Offering an alternative source for accessing digital content, Shopdeck aims to provide a seamless experience for 3DS users. Please note that this project does not cover the Wii U eShop for now.
-
-## Overview
-
-Made some plans to port this to wii u too in a future 
--DoggoITA
 
 ## Anti-Piracy Statement
 
