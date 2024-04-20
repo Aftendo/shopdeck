@@ -13,6 +13,5 @@ app.register_blueprint(ecs.ecs)
 app.register_blueprint(ias.ias)
 app.register_blueprint(cas.cas)
 app.register_blueprint(cdn.ccs)
-app.register_blueprint(webcdn.ccs)
 
 print("READY!")
