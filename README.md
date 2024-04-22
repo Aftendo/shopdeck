@@ -4,6 +4,12 @@ Note that this is still WIP ⚠️
 
 [![contributors](https://img.shields.io/github/contributors/LetsShop3DS/shopdeck)](https://github.com/LetsShop3DS/shopdeck/graphs/contributors) [![followers](https://img.shields.io/github/followers/LetsShop3DS)](https://github.com/LetsShop3DS) [![stars](https://img.shields.io/github/stars/LetsShop3DS/shopdeck)](https://github.com/LetsShop3DS/shopdeck)
 
+**Everybody who contributed so far!**
+
+<a href = "https://github.com/Aftendo/shopdeck/graphs/contributors">
+  <img src = "https://contrib.rocks/image?repo=Aftendo/shopdeck"/>
+</a>
+
 ## Overview
 
 Welcome to Shopdeck, the official replacement server for the Nintendo 3DS eShop. Offering an alternative source for accessing digital content, Shopdeck aims to provide a seamless experience for 3DS users. Please note that this project does not cover the Wii U eShop for now.
@@ -23,4 +29,10 @@ Shopdeck operates strictly within legal boundaries. We adhere to stringent polic
 ## Setup Instructions
 
 For comprehensive setup instructions, please refer to the [Wiki/Development Setup](https://github.com/LetsShop3DS/shopdeck/wiki/Development-Setup) section of this repository.
+
+## Credits
+
+Thanks to:
+- ZeroSkill for giving us precious JSON responses from the official Nintendo eShop servers, as well as some documentation and help on getting tickets working
+- DoggoITA for being the first contributor to shopdeck & making some good enhancements! (Rankings, new webUI, and votes)
 
