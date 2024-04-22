@@ -1,17 +1,23 @@
 from django.contrib import admin
+from django import forms
 from .models import *
-# Register your models here.
 
 admin.site.register(Client3DS)
 admin.site.register(customTitleID)
+admin.site.register(age)
+admin.site.register(descriptor)
 admin.site.register(Title)
 admin.site.register(ownedTitle)
 admin.site.register(wishlistedTitle)
 admin.site.register(announcement)
 admin.site.register(motd)
 admin.site.register(category)
+admin.site.register(keyword)
+admin.site.register(feature)
 admin.site.register(publisher)
 admin.site.register(genre)
+admin.site.register(website)
+admin.site.register(language)
 admin.site.register(platform)
 admin.site.register(redeemableCard)
 admin.site.register(searchCategory)
@@ -19,4 +25,3 @@ admin.site.register(movie)
 admin.site.register(User)
 admin.site.register(item)
 admin.site.register(ownedTicket)
-admin.site.register(Vote)
