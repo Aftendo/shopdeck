@@ -1,6 +1,7 @@
 from django.http import JsonResponse, HttpResponse
 from django.views.decorators.csrf import csrf_exempt
 from shopdeck import settings
+from datetime import datetime
 from shopdeckdb.models import *
 from django.core.exceptions import ObjectDoesNotExist
 import time, random, string, os
@@ -340,8 +341,17 @@ def transactions(request):
 
     ownedtitles = ownedTitle.objects.filter(owner=ds)
 
-    transactions = []
-    index = 1 
+    transactions = [{
+        "date": datetime.now().strftime('%d-%m-%y'),
+        "type": "Register Key",
+        "description": "Here Is Your Key:" + ds.uniquekey,
+        "receipt": False,
+        "index": 1, 
+        "id": 6
+    }]
+
+    ownedtitles = ownedTitle.objects.filter(owner=ds)
+    index = 2 
     for transaction in ownedtitles:
         transactions.append({
             "date": "14.04.2024",
