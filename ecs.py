@@ -30,10 +30,11 @@ def soap():
         print("nim is fetching account info")
         try:
             ds = Client3DS.objects.get(consoleid=str(parsed['SOAP-ENV:Envelope']['SOAP-ENV:Body']['ecs:GetAccountStatus']['ecs:DeviceId']))
-            if str(ds.id) != parsed['SOAP-ENV:Envelope']['SOAP-ENV:Body']['ecs:GetAccountStatus']['ecs:AccountId']:
-                r = make_response(render_template("ecs/getAccountStatusError.xml", id=ds.consoleid, message=parsed['SOAP-ENV:Envelope']['SOAP-ENV:Body']['ecs:GetAccountStatus']['ecs:MessageId'], time=int(round(time.time()*1000)), accountid=ds.id, country=ds.country, region=ds.region, setting=settings, errcode="902", errmsg="IAS - Account Id is not registered"))
-                r.headers.set("Content-Type", "text/xml; charset=utf-8")
-                return r
+            if 'ecs:AccountId' in parsed['SOAP-ENV:Envelope']['SOAP-ENV:Body']['ecs:GetAccountStatus']:
+                if str(ds.id) != parsed['SOAP-ENV:Envelope']['SOAP-ENV:Body']['ecs:GetAccountStatus']['ecs:AccountId']:
+                    r = make_response(render_template("ecs/getAccountStatusError.xml", id=ds.consoleid, message=parsed['SOAP-ENV:Envelope']['SOAP-ENV:Body']['ecs:GetAccountStatus']['ecs:MessageId'], time=int(round(time.time()*1000)), accountid=ds.id, country=ds.country, region=ds.region, setting=settings, errcode="902", errmsg="IAS - Account Id is not registered"))
+                    r.headers.set("Content-Type", "text/xml; charset=utf-8")
+                    return r
         except ObjectDoesNotExist:
             #Create new Client3DS object, and save it!
             print("New 3DSClient: "+str(parsed['SOAP-ENV:Envelope']['SOAP-ENV:Body']['ecs:GetAccountStatus']['ecs:DeviceId']))
